@@ -1,4 +1,4 @@
-<a name="readme-top"></>
+<a name="readme-top"></a>
 
 <!-- PROJECT LOGO -->
 <br />
@@ -50,9 +50,6 @@
           <a href="#naming-convention-for-github-branches">Naming Convention for GitHub Branches</a>
         </li>
         <li>
-          <a href="#deployment">Deployment</a>
-        </li>
-        <li>
           <a href="#testing">Testing</a>
         </li>
       </ol>
@@ -98,18 +95,6 @@ The Student Information and Grading System is a role-based application developed
 * Designed to enhance efficiency in managing grading workflow, improve user-support, and optimize grading workflow.
 * Provides a user-friendly interface for ease of use by faculty and registrar involved in grading management.
 * Version 0.1.0 aims to establish a solid foundation for future enhancements and updates based on user feedback and evolving business needs.
-
-### Version 0.2.0
-
-* Iterated Design base on the comment and suggestion of clients.
-* Implemented Features:
-* Student and Faculty data collection.
-* Tracking of Faculty logs
-* Summary Report at the end of the Quarter/Semester.
-
-<br />
-
-<div align="right">(<a href="#readme-top">back to top</a>)</div>
 
 ---
 
