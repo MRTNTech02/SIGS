@@ -94,7 +94,7 @@ The Student Information and Grading System is a role-based application developed
 * Grade Management System which enables Faculty to input, update, and submit grades and allows the Registrar to review and approve grades.
 * Designed to enhance efficiency in managing grading workflow, improve user-support, and optimize grading workflow.
 * Provides a user-friendly interface for ease of use by faculty and registrar involved in grading management.
-* Version 0.1.0 aims to establish a solid foundation for future enhancements and updates based on user feedback and evolving business needs.
+* Version 0.1.0 aims to establish a solid foundation for future enhancements and updates based on user feedback and evolving academic needs.
 
 ---
 
