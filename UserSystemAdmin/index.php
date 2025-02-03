@@ -28,11 +28,11 @@
                 <div class="card-body">
                     <h1 class="card-subtitle mb-3" align="left">Log In</h1>
                     <form>
-                        <div class="mb-5" align="left">
+                        <div class="mb-4" align="left">
                             <label for="username" class="form-label">Username</label>
                             <input type="username" class="form-control" id="username" placeholder="Enter username" required>
                         </div>
-                        <div class="mb-5" align="left">
+                        <div class="mb-4" align="left">
                             <label for="password" class="form-label">Password</label>
                             <input type="password" class="form-control" id="password" placeholder="Enter password" required>
                         </div>

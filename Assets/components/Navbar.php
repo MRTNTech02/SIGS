@@ -16,7 +16,7 @@
     <div class="container-fluid">
       <!-- Logo and Title -->
       <a class="navbar-brand d-flex align-items-center">
-        <img src="../Assets/ASHS_logo.png" alt="ASHS logo" width="30px">
+        <img src="../Assets/img/ASHS_logo.png" alt="ASHS logo" width="30px">
         <h5 class="mb-0 ms-2">Student Information and Grading System</h5>
       </a>
   
