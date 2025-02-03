@@ -9,5 +9,6 @@
     <?php
         include '../Assets/components/Navbar.php';
     ?>
+    Hello beh
 </body>
 </html>
