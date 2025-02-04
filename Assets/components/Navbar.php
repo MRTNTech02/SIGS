@@ -5,10 +5,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Bootstrap -->
+  <link rel="stylesheet" href="../../Bootstrap/css/bootstrap.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script defer src="../Bootstrap/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
   <nav class="navbar bg-success" data-bs-theme="dark">
@@ -24,7 +24,7 @@
         <!-- Notification Dropdown -->
         <div class="dropdown me-2">
           <button class="btn bg-transparent border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-bell"></i>
+            <i class="fas fa-bell"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
             <li><a class="dropdown-item" href="#">New notifications</a></li>
@@ -35,7 +35,7 @@
         <!-- Profile Dropdown -->
         <div class="dropdown">
           <button class="btn bg-transparent border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-person-circle"></i>
+            <i class="fas fa-user-circle"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
             <li><a class="dropdown-item" href="#">Profile</a></li>
@@ -48,3 +48,5 @@
   </nav>
 </body>
 </html>
+<!-- Javascript for Poppers-->
+<script src="../Bootstrap/js/bootstrap.bundle.min.js"></script>

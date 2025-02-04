@@ -6,23 +6,23 @@
     <title>Sidebar</title>
     <!-- Bootstrap -->
     <link rel="stylesheet" href="../../Bootstrap/css/bootstrap.min.css">
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Bootstrap Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
     <body>
         <div class="d-flex">
             <nav id="sidebar" class="sidebar bg-light vh-100 p-2">
-                <i class="bi bi-house-door" id="toggleSidebar"></i>
+                <i class="fas fa-columns" id="toggleSidebar"></i>
                 <!-- <button class="btn btn-primary w-100 mb-3" id="toggleSidebar">Toggle</button> -->
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a href="dashboard.php" class="nav-link text-dark" data-menu="dashboard">
-                            <i class="bi bi-house-door"></i> <span>Dashboard</span>
+                            <i class="fas fa-tachometer"></i> <span>Dashboard</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="user_management.php" class="nav-link text-dark" data-menu="users">
-                            <i class="bi bi-info-circle"></i> <span>User Management</span>
+                            <i class="fas fa-users"></i> <span>User Management</span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -32,12 +32,12 @@
                     </li>
                     <li class="nav-item">
                         <a href="#" class="nav-link text-dark" data-menu="maintenance">
-                            <i class="bi bi-envelope"></i> <span>Maintenance</span>
+                            <i class="fas fa-cog"></i> <span>Maintenance</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="#" class="nav-link text-dark" data-menu="support">
-                            <i class="bi bi-gear"></i> <span>User Support</span>
+                            <i class="fas fa-user-md"></i> <span>User Support</span>
                         </a>
                     </li>
                 </ul>
@@ -64,6 +64,7 @@
     .sidebar {
         width: 250px;
         transition: width 0.3s;
+        border-right: solid green;
     }
     .sidebar.collapsed {
         width: 80px;
