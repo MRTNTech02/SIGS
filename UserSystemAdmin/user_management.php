@@ -15,7 +15,7 @@
         ?>
         <!-- Main content -->
         <div class="content p-4">
-            <h1>Hello this is the user management page</h1>
+            <h4>User Management</h4>
             <p>test</p>
         </div>
     </div>

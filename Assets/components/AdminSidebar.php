@@ -12,8 +12,8 @@
     <body>
         <div class="d-flex">
             <nav id="sidebar" class="sidebar bg-light vh-100 p-2">
-                <i class="fas fa-columns" id="toggleSidebar"></i>
-                <!-- <button class="btn btn-primary w-100 mb-3" id="toggleSidebar">Toggle</button> -->
+                <i class="fas fa-columns" id="toggleSidebar" style="float: right;"></i>
+                </br>
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a href="dashboard.php" class="nav-link text-dark" data-menu="dashboard">
@@ -27,7 +27,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="#" class="nav-link text-dark" data-menu="logs">
-                            <i class="bi bi-gear"></i> <span>Log Monitoring</span>
+                            <i class="fas fa-cog"></i> <span>Log Monitoring</span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -67,7 +67,7 @@
         border-right: solid green;
     }
     .sidebar.collapsed {
-        width: 80px;
+        width: 70px;
     }
     .sidebar.collapsed .nav-link span {
         display: none;
