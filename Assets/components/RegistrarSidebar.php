@@ -11,33 +11,34 @@
 </head>
     <body>
         <div class="d-flex">
-            <nav id="sidebar" class="sidebar bg-light p-2" style="height: 100%;">
+            <nav id="sidebar" class="sidebar bg-light vh-100 p-2">
                 <i class="fas fa-columns" id="toggleSidebar" style="float: right;"></i>
                 </br>
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a href="dashboard.php" class="nav-link text-dark" data-menu="dashboard">
-                            <i class="fas fa-tachometer"></i> <span>Dashboard</span>
+                        <a href="homepage.php" class="nav-link text-dark" data-menu="homepage">
+                            <i class="fas fa-home"></i> <span>Homepage</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="user_management.php" class="nav-link text-dark" data-menu="users">
-                            <i class="fas fa-users"></i> <span>User Management</span>
+                        <a href="" class="nav-link text-dark" data-menu="faculty">
+                            <i class="fas fa-users"></i> <span>Faculty</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link text-dark" data-menu="logs">
-                            <i class="fas fa-cog"></i> <span>Log Monitoring</span>
+                        <a href="" class="nav-link text-dark" data-menu="students">
+                            <i class="fas fa-user"></i> <span>Students</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link text-dark" data-menu="maintenance">
-                            <i class="fas fa-cog"></i> <span>Maintenance</span>
+                        <a href="#" class="nav-link text-dark" data-menu="grades">
+                            <i class="fas fa-file-text"></i> <span>Grade Submission</span>
                         </a>
                     </li>
+                    
                     <li class="nav-item">
-                        <a href="#" class="nav-link text-dark" data-menu="support">
-                            <i class="fas fa-user-md"></i> <span>User Support</span>
+                        <a href="#" class="nav-link text-dark" data-menu="bug">
+                            <i class="fas fa-bug"></i> <span>Report a Bug</span>
                         </a>
                     </li>
                 </ul>
@@ -65,7 +66,6 @@
         width: 250px;
         transition: width 0.3s;
         border-right: solid green;
-        border-bottom: solid green
     }
     .sidebar.collapsed {
         width: 70px;
