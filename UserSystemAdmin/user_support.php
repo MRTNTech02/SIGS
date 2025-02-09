@@ -19,7 +19,7 @@
         ?>
         <!-- Main content -->
         <div class="content p-4 flex-grow-1">
-            <h4 class="text-muted">User Management</h4>
+            <h4 class="text-muted">User Support</h4>
             <div class="card table-container">
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-3">
@@ -34,10 +34,10 @@
                             <thead align="center">
                                 <tr>
                                     <th>No.</th>
-                                    <th>Name</th>
-                                    <th>Role</th>
-                                    <th>Last Login</th>
-                                    <th>Actions</th>
+                                    <th>Ticket ID</th>
+                                    <th>Description</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody id="tableBody" align="center">

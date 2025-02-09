@@ -1,17 +1,20 @@
+<?php 
+
+?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sidebar</title>
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="../../Bootstrap/css/bootstrap.min.css">
-    <!-- Bootstrap Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sidebar</title>
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="../../Bootstrap/css/bootstrap.min.css">
+        <!-- Bootstrap Font Awesome Icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    </head>
     <body>
         <div class="d-flex">
-            <nav id="sidebar" class="sidebar bg-light p-2" style="height: 100%;">
+            <nav id="sidebar" class="sidebar bg-light p-2">
                 <i class="fas fa-columns" id="toggleSidebar" style="float: right;"></i>
                 </br>
                 <ul class="nav flex-column">
@@ -26,17 +29,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link text-dark" data-menu="logs">
+                        <a href="log_monitoring.php" class="nav-link text-dark" data-menu="logs">
                             <i class="fas fa-cog"></i> <span>Log Monitoring</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link text-dark" data-menu="maintenance">
-                            <i class="fas fa-cog"></i> <span>Maintenance</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link text-dark" data-menu="support">
+                        <a href="user_support.php" class="nav-link text-dark" data-menu="support">
                             <i class="fas fa-user-md"></i> <span>User Support</span>
                         </a>
                     </li>
@@ -65,7 +63,8 @@
         width: 250px;
         transition: width 0.3s;
         border-right: solid green;
-        border-bottom: solid green
+        border-bottom: solid green;
+        min-height: 100%;
     }
     .sidebar.collapsed {
         width: 70px;
