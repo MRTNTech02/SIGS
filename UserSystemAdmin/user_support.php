@@ -24,7 +24,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-3">
                         <div class="d-flex align-items-center me-2 w-50">
-                            <input type="text" class="form-control form-control-sm me-1" id="searchInput" placeholder="Search Name">
+                            <input type="text" class="form-control form-control-sm me-1" id="searchInput" placeholder="Search Ticket Number">
                         </div>
                     </div>
 
@@ -34,7 +34,7 @@
                             <thead align="center">
                                 <tr>
                                     <th>No.</th>
-                                    <th>Ticket ID</th>
+                                    <th>Ticket Number</th>
                                     <th>Description</th>
                                     <th>Status</th>
                                     <th>Action</th>
@@ -43,57 +43,47 @@
                             <tbody id="tableBody" align="center">
                                 <tr>
                                     <td>1</td>
-                                    <td>John Doe</td>
-                                    <td><span class="role-label label-faculty">FACULTY</span></td>
-                                    <td>A</td>
+                                    <td>123</td>
+                                    <td>B</td>
+                                    <td><span class="status-label label-completed">COMPLETED</span></td>
                                     <td>
-                                        <a href="view_user.php" class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>
-                                        <a href="edit_user.php" class="btn btn-warning btn-sm"><i class="fas fa-pencil"></i></a>
-                                        <a href="#" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
+                                        <a href="view_ticket.php" class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>2</td>
                                     <td>Jane Smith</td>
-                                    <td><span class="role-label label-registrar">REGISTRAR</span></td>
                                     <td>B</td>
+                                    <td><span class="status-label label-pending">PENDING</span></td>
                                     <td>
                                         <button class="btn btn-info btn-sm"><i class="fas fa-eye"></i></button>
-                                        <button class="btn btn-warning btn-sm"><i class="fas fa-pencil"></i></button>
-                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>3</td>
                                     <td>Emily Johnson</td>
-                                    <td><span class="role-label label-faculty">FACULTY</span></td>
                                     <td>C</td>
+                                    <td><span class="status-label label-completed">COMPLETED</span></td>
                                     <td>
                                         <button class="btn btn-info btn-sm"><i class="fas fa-eye"></i></button>
-                                        <button class="btn btn-warning btn-sm"><i class="fas fa-pencil"></i></button>
-                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>4</td>
                                     <td>Michael Brown</td>
-                                    <td><span class="role-label label-student">STUDENT</span></td>
                                     <td>A</td>
+                                    <td><span class="status-label label-ongoing">ON-GOING</span></td>
                                     <td>
                                         <button class="btn btn-info btn-sm"><i class="fas fa-eye"></i></button>
-                                        <button class="btn btn-warning btn-sm"><i class="fas fa-pencil"></i></button>
-                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>5</td>
                                     <td>Olivia Lee</td>
-                                    <td><span class="role-label label-student">STUDENT</span></td>
                                     <td>B</td>
+                                    <td><span class="status-label label-ongoing">ON-GOING</span></td>
                                     <td>
                                         <button class="btn btn-info btn-sm"><i class="fas fa-eye"></i></button>
-                                        <button class="btn btn-warning btn-sm"><i class="fas fa-pencil"></i></button>
-                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -183,7 +173,7 @@
         #rowsPerPage {
             width: auto;
         }
-        .role-label {
+        .status-label {
             font-weight: bold;
             padding: 2px 8px;       
             border-radius: 12px;   
@@ -192,17 +182,17 @@
             width: 100px;           
             text-align: center;     
         }
-        .label-faculty {
+        .label-completed {
             background-color: #b2dba1; 
             color: #3b7a00;           
         }
 
-        .label-student {
+        .label-ongoing {
             background-color: #add8e6;  
             color: #004080;            
         }
 
-        .label-registrar {
+        .label-pending {
             background-color: #ffcc99; 
             color: #cc5200;          
         }

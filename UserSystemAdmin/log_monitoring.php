@@ -24,6 +24,7 @@
                     <!-- Search input and button -->
                     <div class="d-flex align-items-center me-2">
                         <input type="text" class="form-control form-control-sm me-1" id="searchInput" placeholder="Search Name">
+                        <button class="btn btn-success" id="searchButton">Search</button>
                         <!-- Date filters -->
                         <input type="date" class="form-control form-control-sm me-2" id="fromDate">
                         <input type="date" class="form-control form-control-sm me-2" id="toDate">

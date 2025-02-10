@@ -55,5 +55,15 @@
             </div>
         </div>
     </div>
+    <style>
+        @media (max-width: 768px) {
+            .d-flex {
+                flex-wrap: wrap;  
+            }
+            .d-flex > * {
+                margin-bottom: 5px; 
+            }
+        }
+    </style>
 </body>
 </html>
