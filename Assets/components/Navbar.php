@@ -38,7 +38,7 @@
             <i class="fas fa-user-circle"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><a class="dropdown-item" href="user_profile.php">Profile</a></li>
             <li><a class="dropdown-item" href="#">Settings</a></li>
             <li><a class="dropdown-item" href="index.php">Logout</a></li>
           </ul>

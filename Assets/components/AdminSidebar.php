@@ -64,7 +64,7 @@
         transition: width 0.3s;
         border-right: solid green;
         border-bottom: solid green;
-        min-height: 100%;
+        height: 620px;
     }
     .sidebar.collapsed {
         width: 70px;

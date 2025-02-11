@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Management</title>
+    <title>Log Monitoring</title>
     <!-- Bootstrap -->
     <link rel="stylesheet" href="../../Bootstrap/css/bootstrap.min.css">
     <!-- Bootstrap Font Awesome Icons -->
@@ -24,12 +24,12 @@
                     <!-- Search input and button -->
                     <div class="d-flex align-items-center me-2">
                         <input type="text" class="form-control form-control-sm me-1" id="searchInput" placeholder="Search Name">
-                        <button class="btn btn-success" id="searchButton">Search</button>
+                        <button class="btn btn-success btn-sm" id="searchButton">Search</button>
                         <!-- Date filters -->
                         <input type="date" class="form-control form-control-sm me-2" id="fromDate">
                         <input type="date" class="form-control form-control-sm me-2" id="toDate">
                         <!-- Export button -->
-                        <button class="btn btn-primary btn-sm" id="exportButton">Export to Excel</button>
+                        <button class="btn btn-primary btn-sm" id="exportButton">Export</button>
                     </div>
                 </div>
                     <!-- Table -->

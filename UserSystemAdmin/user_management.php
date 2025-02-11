@@ -23,7 +23,7 @@
                     <div class="d-flex justify-content-between mb-3">
                         <!-- Search input and button -->
                         <div class="input-group w-50">
-                            <input type="text" class="form-control" id="searchInput" placeholder="Search Name">
+                            <input type="text" class="form-control form-control-sm me-1" id="searchInput" placeholder="Search Name">
                             <button class="btn btn-success" id="searchButton">Search</button>
                         </div>
                         <a href="AddUser.php" class="btn btn-primary">
@@ -56,7 +56,7 @@
                                         <a href="#" class="btn btn-info btn-sm">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="#" class="btn btn-warning btn-sm">
+                                        <a href="EditUser.php" class="btn btn-warning btn-sm">
                                             <i class="fas fa-pencil"></i>
                                         </a>
                                         <a href="#" class="btn btn-danger btn-sm">
