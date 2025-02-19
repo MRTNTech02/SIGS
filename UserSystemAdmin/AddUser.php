@@ -1,3 +1,88 @@
+<?php 
+  session_start();
+  include ("../server_connection/db_connect.php");
+  if (empty($_SESSION["username"]) && empty ($_SESSION["a_password"])) {
+    header("location: index.php");
+    exit();
+  }
+  if (!empty($_SESSION["username"])){
+    $admin_id = $_SESSION["admin_id"];
+
+    $sql = "SELECT * FROM admin_tbl WHERE admin_id = :admin_id";
+    try{
+      $stmt = $conn->prepare($sql);
+      $stmt->bindParam(':admin_id', $admin_id, PDO::PARAM_INT);
+      $stmt->execute();
+
+      if($stmt->rowCount() > 0){
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        $admin_name = $data['a_fname'] . ' ' . $data['a_lname'];
+        $username = $data['username'];
+      }
+    }catch(Exception $e){
+      echo "Error: " . $e->getMessage();
+      exit();
+    }
+  }
+  if (isset($_GET['logout'])) {
+    session_destroy();
+    unset($_SESSION['username']);
+    header("location: index.php");
+    exit();
+  }
+?>
+
+<?php
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
+        try {
+            $id_number = $_POST["id_number"];
+            $u_fname = $_POST["u_fname"];
+            $u_mname = $_POST["u_mname"];
+            $u_lname = $_POST["u_lname"];
+            $u_suffix = $_POST["u_suffix"];
+            $u_sex = $_POST["u_sex"];
+            $u_birthdate = $_POST["u_birthdate"];
+            $user_email = $_POST["user_email"];
+            $role = $_POST["role"];
+            $user_password = $_POST["user_password"];
+            $user_profile = $_POST["user_profile"];
+            $user_status = $_POST["user_status"];
+
+            if (empty($id_number) || empty($u_fname) || empty($u_lname) || empty($user_email) || empty($role) || empty($user_password)) {
+                throw new Exception("Required fields are missing.");
+            }
+
+            $sql = "INSERT INTO users_tbl (id_number, u_fname, u_mname, u_lname, u_suffix, u_sex, u_birthdate, user_email, role, user_password, user_profile, user_status) 
+            VALUES (:id_number, :u_fname, :u_mname, :u_lname, :u_suffix, :u_sex, :u_birthdate, :user_email, :role, :user_password, :user_profile, :user_status)";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([
+                ":id_number" => $id_number,
+                ":u_fname" => $u_fname,
+                ":u_mname" => $u_mname,
+                ":u_lname" => $u_lname,
+                ":u_suffix" => $u_suffix,
+                ":u_sex" => $u_sex,
+                ":u_birthdate" => $u_birthdate,
+                ":user_email" => $user_email,
+                ":role" => $role,
+                ":user_password" => $user_password,
+                ":user_profile" => $user_profile,
+                ":user_status" => $user_status,
+            ]);
+
+            echo "<script>
+                alert('New User Saved Successfully!');
+                window.location.href = 'user_management.php';
+            </script>";
+            exit();
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,59 +106,65 @@
             <div class="main-content">
                 <div class="card">
                     <div class="card-body">
-                        <form>
+                        <form method="post" action="AddUser.php">
+                            <input type="hidden" id="user_status" name="user_status" value="Active">
+                            <input type="hidden" id="user_profile" name="user_profile" value="userdefaultprofile.jpg">
                             <div class="form-row">
                                 <div class="form-group col-md-3">
-                                    <label for="firstName">First Name</label>
-                                    <input type="text" class="form-control" id="firstName" placeholder="First Name" required>
+                                    <label for="u_fname">First Name</label>
+                                    <input type="text" class="form-control" id="u_fname" name="u_fname" placeholder="First Name" required>
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <label for="middleName">Middle Name</label>
-                                    <input type="text" class="form-control" id="middleName" placeholder="Middle Name">
+                                    <label for="u_mname">Middle Name</label>
+                                    <input type="text" class="form-control" id="u_mname" name="u_mname" placeholder="Middle Name">
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <label for="lastName">Last Name</label>
-                                    <input type="text" class="form-control" id="lastName" placeholder="Last Name" required>
+                                    <label for="u_lname">Last Name</label>
+                                    <input type="text" class="form-control" id="u_lname" name="u_lname" placeholder="Last Name" required>
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <label for="suffix">Suffix</label>
-                                    <input type="text" class="form-control" id="suffix" placeholder="Suffix (Optional)">
+                                    <label for="u_suffix">Suffix</label>
+                                    <input type="text" class="form-control" id="u_suffix" name="u_suffix" placeholder="Suffix (Optional)">
                                 </div>
                             </div>
                             <div class="form-row">
-                                <div class="form-group col-md-4">
-                                    <label for="email">Email</label>
-                                    <input type="email" class="form-control" id="email" placeholder="Email" required>
+                                <div class="form-group col-md-3">
+                                    <label for="id_number">ID Number</label>
+                                    <input type="text" class="form-control" id="id_number" name="id_number" placeholder="ID Number" required>
                                 </div>
-                                <div class="form-group col-md-4">
-                                    <label for="sex">Sex</label>
-                                    <select id="sex" class="form-control" required>
+                                <div class="form-group col-md-3">
+                                    <label for="user_email">Email</label>
+                                    <input type="email" class="form-control" id="user_email" name="user_email" placeholder="Email" required>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="u_sex">Sex</label>
+                                    <select id="u_sex" name="u_sex" class="form-control" required>
                                         <option value="" disabled selected>Select Sex</option>
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
                                         <option value="Other">Other</option>
                                     </select>
                                 </div>
-                                <div class="form-group col-md-4">
-                                    <label for="birthdate">Birthdate</label>
-                                    <input type="date" class="form-control" id="birthdate" required>
+                                <div class="form-group col-md-3">
+                                    <label for="u_birthdate">Birthdate</label>
+                                    <input type="date" class="form-control" id="u_birthdate" name="u_birthdate" required>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label for="password">Password</label>
-                                    <input type="text" class="form-control" id="password" value="UserDefaultPassword123" disabled>
+                                    <label for="user_password">Password</label>
+                                    <input type="text" class="form-control" id="user_password" name="user_password" value="UserDefaultPassword123" readonly>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="role">Role</label>
-                                    <select id="role" class="form-control" required>
+                                    <select id="role" name="role" class="form-control" required>
                                         <option value="" disabled selected>Select Role</option>
                                         <option value="Registrar">Registrar</option>
                                         <option value="Faculty">Faculty</option>
                                     </select>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-success">Create User</button>
+                            <button type="submit" name="register" id="register" class="btn btn-success">Create User</button>
                             <a href="user_management.php" class="btn btn-secondary"> Cancel </a>
                         </form>
                     </div>

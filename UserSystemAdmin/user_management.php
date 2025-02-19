@@ -1,3 +1,33 @@
+<?php 
+  session_start();
+  include ("../server_connection/db_connect.php");
+  if (empty($_SESSION["username"]) && empty ($_SESSION["a_password"])) {
+    header("location: index.php");
+  }
+  if (!empty($_SESSION["username"])){
+    $admin_id = $_SESSION["admin_id"];
+
+    $sql = "SELECT * FROM admin_tbl WHERE admin_id=$admin_id";
+    try{
+      $result = $conn->prepare($sql);
+      $result->execute();
+
+      if($result->rowCount()>0){
+        $data = $result->fetch(PDO::FETCH_ASSOC);
+        $admin_name = $data['a_fname'] . ' ' . $data['a_lname'] ;
+        $username = $data['username'];
+      }
+    }catch(Exception $e){
+      echo "Error" . $e;
+    }
+  };
+  if (isset($_GET['logout'])) {
+    session_destroy();
+    unset($_SESSION['username']);
+    header("location: index.php");
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,146 +68,71 @@
                             <thead align="center">
                                 <tr>
                                     <th>No.</th>
+                                    <th>ID Number</th>
                                     <th>Name</th>
                                     <th>Role</th>
-                                    <th>Last Login</th>
+                                    <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="tableBody" align="center">
-                                <tr>
-                                    <td>1</td>
-                                    <td>John Doe</td>
-                                    <td>
-                                        <span class="role-label label-faculty">FACULTY</span>
-                                    </td>
-                                    <td>A</td>
-                                    <td>
-                                        <a href="#" class="btn btn-info btn-sm">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="EditUser.php" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-pencil"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Jane Smith</td>
-                                    <td>
-                                        <span class="role-label label-registrar">REGISTRAR</span>
-                                    </td>
-                                    <td>B</td>
-                                    <td>
-                                        <a href="#" class="btn btn-info btn-sm">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-pencil"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>Emily Johnson</td>
-                                    <td>
-                                        <span class="role-label label-faculty">FACULTY</span>
-                                    </td>
-                                    <td>C</td>
-                                    <td>
-                                        <a href="#" class="btn btn-info btn-sm">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-pencil"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>4</td>
-                                    <td>Michael Brown</td>
-                                    <td>
-                                        <span class="role-label label-faculty">FACULTY</span>
-                                    </td>
-                                    <td>A</td>
-                                    <td>
-                                        <a href="#" class="btn btn-info btn-sm">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-pencil"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>5</td>
-                                    <td>Olivia Lee</td>
-                                    <td>
-                                        <span class="role-label label-faculty">FACULTY</span>
-                                    </td>
-                                    <td>B</td>
-                                    <td>
-                                        <a href="#" class="btn btn-info btn-sm">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-pencil"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>4</td>
-                                    <td>Michael Brown</td>
-                                    <td>
-                                        <span class="role-label label-faculty">FACULTY</span>
-                                    </td>
-                                    <td>A</td>
-                                    <td>
-                                        <a href="#" class="btn btn-info btn-sm">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-pencil"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>5</td>
-                                    <td>Olivia Lee</td>
-                                    <td>
-                                        <span class="role-label label-registrar">REGISTRAR</span>
-                                    </td>
-                                    <td>B</td>
-                                    <td>
-                                        <a href="#" class="btn btn-info btn-sm">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-pencil"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                                <?php
+                                    $sql = "SELECT * FROM users_tbl";
+                                    try
+                                    {
+                                        $result=$conn->prepare($sql);
+                                        $result->execute();
+                                        // $status = $_SESSION['status'];
+                                        if($result->rowcount()>0)
+                                        {
+                                            $i=1;
+                                            while($row=$result->fetch(PDO::FETCH_ASSOC))
+                                            {
+                                                echo "
+                                                    <tr>
+                                                        <td class='text-center'>{$i} </td>
+                                                        <td class='text-center'>{$row["id_number"]}</td>
+                                                        <td>{$row["u_fname"]} {$row["u_lname"]}</td>
+                                                        <td>";
+                                                        if ($row["role"] == 'Faculty') {
+                                                            echo "<span class='role-label label-faculty'>{$row["role"]}</span>";
+                                                        } else {
+                                                            echo "<span class='role-label label-registrar'>{$row["role"]}</span>";
+                                                        }                                                        
+                                                        echo "
+                                                        </td>
+                                                        <td>{$row["user_status"]} </td>";
+                                                        ?>
+                                                        <td class='text-center'>
+                                                            <?php 
+                                                            echo "
+                                                                <a href='ViewUser.php?user_id={$row["user_id"]}' class='btn btn-info btn-sm'>
+                                                                    <i class='fas fa-eye'></i>
+                                                                </a>
+                                                                <a href='EditUser.php?user_id={$row["user_id"]}' class='btn btn-warning btn-sm'>
+                                                                    <i class='fas fa-pencil'></i>
+                                                                </a>
+                                                                <a href='' class='btn btn-danger btn-sm'>
+                                                                    <i class='fas fa-trash'></i>
+                                                                </a>
+                                                            "; 
+                                                            ?>
+                                                        </td>
+                                                    </tr>
+                                                <?php
+                                                $i++;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            echo "<tr><tdv colspan = '6'> No records found. </td></tr>";
+                                        }
+                                    }
+                                    catch(Exception $e)
+                                    {
+                                        echo "Unexpected error has been occured!" . $e ->getMessage();
+                                    }
+                                ?>
                             </tbody>
                         </table>
                     </div>

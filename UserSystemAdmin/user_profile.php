@@ -24,7 +24,7 @@
                         <div class="card">
                             <div class="card-header text-center">Profile Picture</div>
                             <div class="card-body text-center">
-                                <img src="../Assets/img/profile_pictures/default_profile.jpg" class="img-fluid mb-3" alt="Profile Picture">
+                                <img src="../Assets/img/profile_pictures/userdefaultprofile.jpg" class="img-fluid mb-3" alt="Profile Picture">
                                 <p>Upload your profile picture here</p>
                                 <input type="file" class="form-control-file">
                                 <button class="btn btn-outline-secondary mt-3">Update Email or Password</button>
