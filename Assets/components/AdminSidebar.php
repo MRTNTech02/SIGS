@@ -64,7 +64,7 @@
         transition: width 0.3s;
         border-right: solid green;
         border-bottom: solid green;
-        height: 620px;
+        height: 100vh;
     }
     .sidebar.collapsed {
         width: 70px;
@@ -76,4 +76,9 @@
         background-color: green !important;
         color: white !important;
     }
+    html, body {
+    height: 100vh;
+    margin: 0;
+    overflow: hidden; /* Prevents scrolling */
+}
 </style>
