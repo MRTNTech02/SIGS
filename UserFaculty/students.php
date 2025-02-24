@@ -1,31 +1,39 @@
 <?php 
-  session_start();
-  include ("../server_connection/db_connect.php");
-  if (empty($_SESSION["username"]) && empty ($_SESSION["a_password"])) {
-    header("location: index.php");
-  }
-  if (!empty($_SESSION["username"])){
-    $admin_id = $_SESSION["admin_id"];
+    session_start();
+    include ("../server_connection/db_connect.php");
 
-    $sql = "SELECT * FROM admin_tbl WHERE admin_id=$admin_id";
-    try{
-      $result = $conn->prepare($sql);
-      $result->execute();
+    // Ensure user is logged in
+    if (!isset($_SESSION["id_number"]) || !isset($_SESSION["user_id"])) 
+    {
+        header("location: index.php");
+    }
 
-      if($result->rowCount()>0){
-        $data = $result->fetch(PDO::FETCH_ASSOC);
-        $admin_name = $data['a_fname'] . ' ' . $data['a_lname'] ;
-        $username = $data['username'];
-      }
-    }catch(Exception $e){
-      echo "Error" . $e;
+    $user_id = $_SESSION["user_id"];
+
+    $sql = "SELECT * FROM users_tbl WHERE user_id = :user_id";
+    try {
+        $result = $conn->prepare($sql);
+        $result->bindParam(':user_id', $user_id);
+        $result->execute();
+
+        if($result->rowCount() > 0){
+            $data = $result->fetch(PDO::FETCH_ASSOC);
+            $user_name = htmlspecialchars($data['u_fname'] . ' ' . $data['u_lname']);  
+            $id_number = htmlspecialchars($data['id_number']);
+        }
+    } 
+    catch(Exception $e) {
+        echo "Error: " . $e->getMessage();
     }
-  };
-  if (isset($_GET['logout'])) {
-    session_destroy();
-    unset($_SESSION['username']);
-    header("location: index.php");
-    }
+
+    // Logout logic
+    if (isset($_GET['logout'])) {
+        session_destroy();
+        unset($_SESSION['id_number']);
+        unset($_SESSION['user_id']);
+        header("location: index.php");
+        exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -33,7 +41,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Management</title>
+    <title>Students</title>
     <!-- Bootstrap -->
     <link rel="stylesheet" href="../../Bootstrap/css/bootstrap.min.css">
     <!-- Bootstrap Font Awesome Icons -->
@@ -43,41 +51,42 @@
     <?php include '../Assets/components/Navbar.php'; ?>
 
     <div class="d-flex">
-        <?php include '../Assets/components/AdminSidebar.php'; ?>
+        <?php include '../Assets/components/FacultySidebar.php'; ?>
 
         <!-- Main content -->
         <div class="content p-4 flex-grow-1">
-            <h4 class="text-muted">User Management</h4>
+            <h4 class="text-muted">Students</h4>
             <div class="card table-container">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between mb-3">
+                    <div class="d-flex justify-content-between">
                         <!-- Search input and button -->
                         <div class="input-group w-50">
                             <input type="text" class="form-control form-control-sm me-1" id="searchInput" placeholder="Search Name">
                             <button class="btn btn-success" id="searchButton">Search</button>
                         </div>
-                        <a href="AddUser.php" class="btn btn-primary">
+                        <a href="AddStudent.php" class="btn btn-primary">
                             <i class="fas fa-plus"></i>
-                            Add New User
+                            Add New Student
                         </a>
                     </div>
 
                     <!-- Table -->
                     <div class="table-responsive">
-                        <table class="table table-striped" id="studentsTable">
+                        <table class="table" id="studentsTable">
                             <thead align="center">
                                 <tr>
                                     <th>No.</th>
-                                    <th>ID Number</th>
+                                    <th>LRN</th>
                                     <th>Name</th>
-                                    <th>Role</th>
-                                    <th>Status</th>
+                                    <th>Strand</th>
+                                    <th>Grade Level</th>
+                                    <th>Section</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="tableBody" align="center">
                                 <?php
-                                    $sql = "SELECT * FROM users_tbl";
+                                    $sql = "SELECT * FROM students_tbl";
                                     try
                                     {
                                         $result=$conn->prepare($sql);
@@ -91,25 +100,19 @@
                                                 echo "
                                                     <tr>
                                                         <td class='text-center'>{$i} </td>
-                                                        <td class='text-center'>{$row["id_number"]}</td>
-                                                        <td>{$row["u_fname"]} {$row["u_lname"]}</td>
+                                                        <td class='text-center'>{$row["student_number"]}</td>
+                                                        <td>{$row["s_fname"]} {$row["s_lname"]}</td>
+                                                        <td class='text-center'>{$row["student_number"]}</td>
+                                                        <td class='text-center'>{$row["student_number"]}</td>
                                                         <td>";
-                                                        if ($row["role"] == 'Faculty') {
-                                                            echo "<span class='role-label label-faculty'>{$row["role"]}</span>";
-                                                        } else {
-                                                            echo "<span class='role-label label-registrar'>{$row["role"]}</span>";
-                                                        }                                                        
-                                                        echo "
-                                                        </td>
-                                                        <td>{$row["user_status"]} </td>";
                                                         ?>
                                                         <td class='text-center'>
                                                             <?php 
                                                             echo "
-                                                                <a href='ViewUser.php?user_id={$row["user_id"]}' class='btn btn-info btn-sm'>
+                                                                <a href='ViewUser.php?student_id={$row["student_id"]}' class='btn btn-info btn-sm'>
                                                                     <i class='fas fa-eye'></i>
                                                                 </a>
-                                                                <a href='EditUser.php?user_id={$row["user_id"]}' class='btn btn-warning btn-sm'>
+                                                                <a href='EditUser.php?student_id={$row["student_id"]}' class='btn btn-warning btn-sm'>
                                                                     <i class='fas fa-pencil'></i>
                                                                 </a>
                                                                 <a href='' class='btn btn-danger btn-sm'>
@@ -161,6 +164,8 @@
 
     <!-- Bootstrap JS -->
     <script src="../Bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
     <!-- Custom JavaScript -->
     <script>
       document.addEventListener("DOMContentLoaded", function() {

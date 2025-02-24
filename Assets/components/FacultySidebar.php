@@ -21,12 +21,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="" class="nav-link text-dark" data-menu="students">
+                        <a href="students.php" class="nav-link text-dark" data-menu="students">
                             <i class="fas fa-user"></i> <span>Students</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link text-dark" data-menu="grades">
+                        <a href="submitGrade.php" class="nav-link text-dark" data-menu="grades">
                             <i class="fas fa-file-text"></i> <span>Grade Submission</span>
                         </a>
                     </li>
@@ -71,5 +71,10 @@
     .sidebar .nav-link.active {
         background-color: green !important;
         color: white !important;
+    }
+    html, body {
+    height: 100vh;
+    margin: 0;
+    overflow: hidden; /* Prevents scrolling */
     }
 </style>

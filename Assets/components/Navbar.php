@@ -34,7 +34,7 @@
   
         <!-- Profile Dropdown -->
         <div class="dropdown">
-          <button class="btn bg-transparent border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <button class="btn bg-transparent border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false=">
             <i class="fas fa-user-circle"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
@@ -49,4 +49,4 @@
 </body>
 </html>
 <!-- Javascript for Poppers-->
-<script src="../Bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../Bootstrap/js/bootstrap.bundle.min.js"></script> 

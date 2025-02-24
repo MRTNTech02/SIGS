@@ -1,3 +1,39 @@
+<?php 
+  session_start();
+  include ("../server_connection/db_connect.php");
+  $errors = array();
+  $_SESSION['success'] ="";
+  if(isset($_POST['submit'])){
+    $id_number = $_POST["id_number"];
+    $user_password = $_POST["user_password"];
+
+    if(empty($id_number)){
+      array_push($errors, "Faculty ID is required");
+    }
+    if(empty($user_password)){
+      array_push($errors, "Password is required");
+    }
+
+    if (empty($errors)){
+        $sql = "SELECT * FROM users_tbl WHERE id_number = :id_number AND user_password = :user_password";
+        $result = $conn->prepare($sql);
+        #bindParam() for security
+        $result->bindParam(':id_number', $id_number);
+        $result->bindParam(':user_password', $user_password);
+        $result->execute();
+
+        if($result->rowCount() == 1){
+            $data = $result->fetch(PDO::FETCH_ASSOC);
+            $_SESSION['id_number'] = $data['id_number'];
+            $_SESSION['user_id'] = $data['user_id'];  
+
+            header("location: homepage.php");
+        } else {
+            $errors[] = "ID Number or password incorrect";
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,17 +69,22 @@
                     <div style="width: 100%; max-width: 500px;">
                         <div>
                             <h1 class="card-subtitle mb-3" align="left">Log In</h1>
-                            <form>
+                            <form method="POST" action="">
                                 <div class="mb-5" align="left">
                                     <label for="id_number" class="form-label">Faculty ID Number</label>
-                                    <input type="id_number" class="form-control" id="id_number" placeholder="Enter ID number" required>
+                                    <input type="id_number" class="form-control" id="id_number" name="id_number" placeholder="Enter ID number" required>
                                 </div>
                                 <div class="mb-5" align="left">
-                                    <label for="password" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="password" placeholder="Enter password" required>
+                                    <label for="user_password" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="user_password" name="user_password" placeholder="Enter password" required>
                                 </div>
-                                <button type="submit" class="btn btn-success w-100">Login</button>
+                                <button type="submit" name="submit" class="btn btn-success w-100">Login</button>
                             </form>
+                            <?php if (!empty($errors)): ?>
+                                <div class="alert alert-danger mt-3">
+                                    <?php foreach ($errors as $error) { echo "<p>$error</p>"; } ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
