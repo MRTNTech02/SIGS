@@ -21,7 +21,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="students.php" class="nav-link text-dark" data-menu="students">
+                        <a href="gradeSection.php" class="nav-link text-dark" data-menu="students">
                             <i class="fas fa-user"></i> <span>Students</span>
                         </a>
                     </li>
@@ -32,7 +32,7 @@
                     </li>
                     
                     <li class="nav-item">
-                        <a href="#" class="nav-link text-dark" data-menu="bug">
+                        <a href="reportBug.php" class="nav-link text-dark" data-menu="bug">
                             <i class="fas fa-bug"></i> <span>Report a Bug</span>
                         </a>
                     </li>

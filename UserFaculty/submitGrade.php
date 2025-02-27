@@ -85,8 +85,8 @@
                             <thead align="center">
                                 <tr>
                                     <th>Subject</th>
-                                    <th>Strand</th>
                                     <th>Grade Level</th>
+                                    <th>Strand</th>
                                     <th>Section</th>
                                     <th>Status</th>
                                     <th>Action</th>
@@ -118,8 +118,8 @@
                                                 echo "
                                                     <tr>
                                                         <td>{$row["subject_name"]}</td>
-                                                        <td>{$row["strand_nn"]}</td>
                                                         <td>{$row["yl_name"]}</td>
+                                                        <td>{$row["strand_nn"]}</td>
                                                         <td>{$row["section_name"]}</td>
                                                         <td>{$row["subject_status"]}</td>
                                                         ";

@@ -55,15 +55,81 @@
 
         <!-- Main content -->
         <div class="content p-4 flex-grow-1">
-            <h4 class="text-muted">Students</h4>
+        <div class="d-flex justify-content-between">
+            <h4 class="text-muted"> 
+                <a class="link-offset-2 link-underline link-underline-opacity-0 text-success" 
+                    href="gradeSection.php">Year & Section 
+                </a>
+                <i class="fa fa-angle-right"></i>
+            <?php
+                $sql = "SELECT 
+                subjects_tbl.subject_id, 
+                subjects_tbl.subject_name, 
+                strands_tbl.strand_nn, 
+                year_levels_tbl.yl_name, 
+                sections_tbl.section_name, 
+                subjects_tbl.subject_status 
+                FROM subjects_tbl
+                INNER JOIN strands_tbl ON strands_tbl.strand_id = subjects_tbl.subject_id
+                INNER JOIN year_levels_tbl ON year_levels_tbl.year_level_id = subjects_tbl.subject_id
+                INNER JOIN sections_tbl ON sections_tbl.section_id = subjects_tbl.subject_id";
+                try
+                {
+                    $result=$conn->prepare($sql);
+                    $result->execute();
+                    // $status = $_SESSION['status'];
+                    if($result->rowcount()>0)
+                    {
+                        $i=1;
+                        while($row=$result->fetch(PDO::FETCH_ASSOC))
+                        {
+                            echo "
+                                <tr>
+                                    <td>{$row["yl_name"]}</td>
+                                    <td>{$row["strand_nn"]}</td>
+                                    <td>{$row["section_name"]}</td>
+                                    ";
+                                    ?>
+                                </tr>
+                            <?php
+                            $i++;
+                        }
+                    }
+                    else
+                    {
+                        echo "<tr><tdv colspan = '6'> No records found. </td></tr>";
+                    }
+                }
+                catch(Exception $e)
+                {
+                    echo "Unexpected error has been occured!" . $e ->getMessage();
+                }
+            ?>
+            </h4>
+                <a href="gradeSection.php" class="link-offset-2 link-underline link-underline-opacity-0">
+                    <button type="button" class="btn btn-warning d-flex justify-content-center align-items-center text-center p-1">
+                        <i class="fas fa-arrow-left"></i> 
+                        <span class="text-wrap p-1">Go Back</span> 
+                    </button>
+                </a>
+            </div>
             <div class="card table-container">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between mb-1">
                         <!-- Search input and button -->
                         <div class="input-group w-50">
                             <input type="text" class="form-control form-control-sm me-1" id="searchInput" placeholder="Search Name">
                             <button class="btn btn-success" id="searchButton">Search</button>
                         </div>
+                        <!-- <button type="button" class="btn border-black dropdown-toggle" 
+                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-filter"></i> Filter by 
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <button class="dropdown-item filter-btn" data-filter="Strand">Strand</button>
+                            <button class="dropdown-item filter-btn" data-filter="Grade Level">Grade Level</button>
+                            <button class="dropdown-item filter-btn" data-filter="Section">Section</button>
+                        </div> -->
                         <a href="AddStudent.php" class="btn btn-primary">
                             <i class="fas fa-plus"></i>
                             Add New Student
@@ -78,9 +144,9 @@
                                     <th>No.</th>
                                     <th>LRN</th>
                                     <th>Name</th>
-                                    <th>Strand</th>
+                                    <!-- <th>Strand</th>
                                     <th>Grade Level</th>
-                                    <th>Section</th>
+                                    <th>Section</th> -->
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -96,6 +162,8 @@
                                     try
                                     {
                                         $result=$conn->prepare($sql);
+                                        // $strandFilter = "STEM";  // Set the filter value
+                                        // $result->bindParam(':strand', $strandFilter, PDO::PARAM_STR);
                                         $result->execute();
                                         // $status = $_SESSION['status'];
                                         if($result->rowcount()>0)
@@ -107,26 +175,23 @@
                                                     <tr>
                                                         <td class='text-center'>{$i} </td>
                                                         <td class='text-center'>{$row["lrn_number"]}</td>
-                                                        <td>{$row["s_fname"]} {$row["s_lname"]} {$row["s_suffix"]}</td>
-                                                        <td>{$row["strand_nn"]}</td>
-                                                        <td>{$row["yl_name"]}</td>
-                                                        <td>{$row["section_name"]}</td>
-                                                        <td>";
+                                                        <td align='left'>{$row["s_lname"]}, {$row["s_fname"]} {$row["s_suffix"]}</td>
+                                                        ";
                                                         ?>
                                                         <td class='text-center'>
-                                                            <!--?php 
+                                                            <?php 
                                                             echo "
-                                                                <a href='ViewUser.php?student_id={$row["student_id"]}' class='btn btn-info btn-sm'>
+                                                                <a href='ViewUser.php?assignment_id={$row["assignment_id"]}' class='btn btn-info btn-sm'>
                                                                     <i class='fas fa-eye'></i>
                                                                 </a>
-                                                                <a href='EditUser.php?student_id={$row["student_id"]}' class='btn btn-warning btn-sm'>
+                                                                <a href='EditUser.php?assignment_id={$row["assignment_id"]}' class='btn btn-warning btn-sm'>
                                                                     <i class='fas fa-pencil'></i>
                                                                 </a>
                                                                 <a href='' class='btn btn-danger btn-sm'>
                                                                     <i class='fas fa-trash'></i>
                                                                 </a>
                                                             "; 
-                                                            ?-->
+                                                            ?>
                                                         </td>
                                                     </tr>
                                                 <?php
@@ -229,6 +294,13 @@
         });
 
         renderTable(); // Initial render
+        
+        document.querySelectorAll('.filter-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const filterText = this.getAttribute('data-filter');
+            document.getElementById('filterText').textContent = `Filter by ${filterText}`;
+            });
+        });
       });
     </script>
 
