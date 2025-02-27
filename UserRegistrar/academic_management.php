@@ -1,21 +1,21 @@
 <?php 
   session_start();
   include ("../server_connection/db_connect.php");
-  if (empty($_SESSION["username"]) && empty ($_SESSION["a_password"])) {
+  if (empty($_SESSION["id_number"]) && empty ($_SESSION["user_password"])) {
     header("location: index.php");
   }
-  if (!empty($_SESSION["username"])){
-    $admin_id = $_SESSION["admin_id"];
+  if (!empty($_SESSION["id_number"])){
+    $user_id = $_SESSION["user_id"];
 
-    $sql = "SELECT * FROM admin_tbl WHERE admin_id=$admin_id";
+    $sql = "SELECT * FROM users_tbl WHERE user_id=$user_id";
     try{
       $result = $conn->prepare($sql);
       $result->execute();
 
       if($result->rowCount()>0){
         $data = $result->fetch(PDO::FETCH_ASSOC);
-        $admin_name = $data['a_fname'] . ' ' . $data['a_lname'] . ' ' . $data['a_suffix'];
-        $username = $data['username'];
+        $registrar_name = $data['u_fname'] . ' ' . $data['u_lname'] . ' ' . $data['u_suffix'] ;
+        $id_number = $data['id_number'];
       }
     }catch(Exception $e){
       echo "Error" . $e;
@@ -23,7 +23,7 @@
   };
   if (isset($_GET['logout'])) {
     session_destroy();
-    unset($_SESSION['username']);
+    unset($_SESSION['id_number']);
     header("location: index.php");
     }
 ?>
@@ -40,20 +40,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <?php include '../Assets/components/Navbar.php'; ?>
+    <?php include '../Assets/components/RegistrarNavbar.php'; ?>
 
     <div class="d-flex">
-        <?php include '../Assets/components/AdminSidebar.php'; ?>
+        <?php include '../Assets/components/RegistrarSidebar.php'; ?>
 
         <!-- Main content -->
         <div class="content p-4 flex-grow-1">
             <h4 class="text-muted">Academic Management</h4>
                 <!-- Navigation Buttons -->
                 <div class="d-flex justify-content-start mb-3">
-                    <a href="academic_management.php" class="btn btn-outline-dark me-2">Strands</a>
+                    <a href="academic_management.php" class="btn btn-success me-2">Strands</a>
                     <a href="grade_levels.php" class="btn btn-outline-dark me-2">Grade Levels</a>
                     <a href="sections.php" class="btn btn-outline-dark me-2">Sections</a>
-                    <a href="subjects.php" class="btn btn-success me-2">Subjects</a>
+                    <a href="subjects.php" class="btn btn-outline-dark me-2">Subjects</a>
                 </div>
             <div class="card table-container">
                 <div class="card-body">
@@ -63,9 +63,9 @@
                             <input type="text" class="form-control form-control-sm me-1" id="searchInput" placeholder="Search Name">
                             <button class="btn btn-success" id="searchButton">Search</button>
                         </div>
-                        <a href="AddSubject.php" class="btn btn-primary">
+                        <a href="AddStrand.php" class="btn btn-primary">
                             <i class="fas fa-plus"></i>
-                            Add New Subject Record
+                            Add New Strand Record
                         </a>
                     </div>
 
@@ -75,13 +75,14 @@
                             <thead align="center">
                                 <tr>
                                     <th>No.</th>
-                                    <th>Subject Name</th>
+                                    <th>Strand Name</th>
+                                    <th>Abreviation</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="tableBody" align="center">
                                 <?php
-                                    $sql = "SELECT * FROM subjects_tbl";
+                                    $sql = "SELECT * FROM strands_tbl";
                                     try
                                     {
                                         $result=$conn->prepare($sql);
@@ -95,12 +96,10 @@
                                                 echo "
                                                     <tr>
                                                         <td class='text-center'>{$i} </td>
-                                                        <td class='text-center'>{$row["subject_name"]}</td>
+                                                        <td class='text-center'>{$row["strand_name"]}</td>
+                                                        <td>{$row["strand_nn"]}</td>
                                                         <td>
-                                                            <a href='ViewSubject.php?subject_id={$row["subject_id"]}' class='btn btn-info btn-sm'>
-                                                                <i class='fas fa-eye'></i>
-                                                            </a>
-                                                            <a href='EditSubject.php?subject_id={$row["subject_id"]}' class='btn btn-warning btn-sm'>
+                                                            <a href='EditStrand.php?strand_id={$row["strand_id"]}' class='btn btn-warning btn-sm'>
                                                                 <i class='fas fa-pencil'></i>
                                                             </a>
                                                         </td>";

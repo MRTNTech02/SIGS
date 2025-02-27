@@ -1,57 +1,52 @@
 <?php 
   session_start();
   include ("../server_connection/db_connect.php");
-  if (empty($_SESSION["username"]) && empty ($_SESSION["a_password"])) {
+  if (empty($_SESSION["id_number"]) && empty ($_SESSION["user_password"])) {
     header("location: index.php");
-    exit();
   }
-  if (!empty($_SESSION["username"])){
-    $admin_id = $_SESSION["admin_id"];
+  if (!empty($_SESSION["id_number"])){
+    $user_id = $_SESSION["user_id"];
 
-    $sql = "SELECT * FROM admin_tbl WHERE admin_id = :admin_id";
+    $sql = "SELECT * FROM users_tbl WHERE user_id=$user_id";
     try{
-      $stmt = $conn->prepare($sql);
-      $stmt->bindParam(':admin_id', $admin_id, PDO::PARAM_INT);
-      $stmt->execute();
+      $result = $conn->prepare($sql);
+      $result->execute();
 
-      if($stmt->rowCount() > 0){
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-        $admin_name = $data['a_fname'] . ' ' . $data['a_lname'];
-        $username = $data['username'];
+      if($result->rowCount()>0){
+        $data = $result->fetch(PDO::FETCH_ASSOC);
+        $registrar_name = $data['u_fname'] . ' ' . $data['u_lname'] . ' ' . $data['u_suffix'] ;
+        $id_number = $data['id_number'];
       }
     }catch(Exception $e){
-      echo "Error: " . $e->getMessage();
-      exit();
+      echo "Error" . $e;
     }
-  }
+  };
   if (isset($_GET['logout'])) {
     session_destroy();
-    unset($_SESSION['username']);
+    unset($_SESSION['id_number']);
     header("location: index.php");
-    exit();
-  }
+    }
 ?>
-
 <?php
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
         try {
-            $yl_name = $_POST["yl_name"];
+            $subject_name = $_POST["subject_name"];
 
-            if (empty($yl_name)) {
+            if (empty($subject_name)) {
                 throw new Exception("Required fields are missing.");
             }
 
-            $sql = "INSERT INTO year_levels_tbl (yl_name) 
-            VALUES (:yl_name)";
+            $sql = "INSERT INTO subjects_tbl (subject_name) 
+            VALUES (:subject_name)";
 
             $stmt = $conn->prepare($sql);
             $stmt->execute([
-                ":yl_name" => $yl_name,
+                ":subject_name" => $subject_name,
             ]);
 
             echo "<script>
-                alert('New Grade Level Saved Successfully!');
-                window.location.href = 'grade_levels.php';
+                alert('New Subject Saved Successfully!');
+                window.location.href = 'subjects.php';
             </script>";
             exit();
         } catch (Exception $e) {
@@ -66,33 +61,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Grade Level</title>
+    <title>Add New Subject</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../Bootstrap/css/bootstrap.min.css">
 </head>
 <body>
     <?php
-        include '../Assets/components/Navbar.php';
+        include '../Assets/components/RegistrarNavbar.php';
     ?>
     <div class="d-flex">
         <?php
-            include '../Assets/components/AdminSidebar.php';
+            include '../Assets/components/RegistrarSidebar.php';
         ?>
         <!-- Main content -->
         <div class="content p-4 w-100">
-            <h4 class="text-muted mb-4">Add New Grade Level</h4>
+            <h4 class="text-muted mb-4">Add New Subject</h4>
             <div class="main-content">
                 <div class="card">
                     <div class="card-body">
-                        <form method="post" action="AddGradeLevel.php">
+                        <form method="post" action="AddSubject.php">
                             <div class="form-row">
                                 <div class="form-group col-md-12">
-                                    <label for="yl_name">Grade Level</label>
-                                    <input type="text" class="form-control" id="yl_name" name="yl_name" required>
+                                    <label for="subject_name">Subject Name</label>
+                                    <input type="text" class="form-control" id="subject_name" name="subject_name" required>
                                 </div>
                             </div>
-                            <button type="submit" name="register" id="register" class="btn btn-success">Save Grade Level</button>
-                            <a href="grade_levels.php" class="btn btn-secondary"> Cancel </a>
+                            <button type="submit" name="register" id="register" class="btn btn-success">Save Subject</button>
+                            <a href="subjects.php" class="btn btn-secondary"> Cancel </a>
                         </form>
                     </div>
                 </div>

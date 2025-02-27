@@ -1,7 +1,7 @@
 <?php 
     session_start();
     include("../server_connection/db_connect.php");
-    if (empty($_SESSION["username"]) || empty($_SESSION["a_password"])) {
+    if (empty($_SESSION["id_number"]) || empty($_SESSION["user_password"])) {
         header("location: index.php");
         exit();
     }
@@ -89,11 +89,11 @@
 </head>
 <body>
     <?php
-        include '../Assets/components/Navbar.php';
+        include '../Assets/components/RegistrarNavbar.php';
     ?>
     <div class="d-flex">
         <?php
-            include '../Assets/components/AdminSidebar.php';
+            include '../Assets/components/RegistrarSidebar.php';
         ?>
         <!-- Main content -->
         <div class="content p-4 w-100">

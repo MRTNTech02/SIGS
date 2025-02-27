@@ -16,18 +16,23 @@
                 </br>
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a href="homepage.php" class="nav-link text-dark" data-menu="homepage">
-                            <i class="fas fa-home"></i> <span>Homepage</span>
+                        <a href="dashboard.php" class="nav-link text-dark" data-menu="dashboard">
+                            <i class="fas fa-tachometer"></i> <span>Dashboard</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="" class="nav-link text-dark" data-menu="faculty">
-                            <i class="fas fa-users"></i> <span>Faculty</span>
+                        <a href="user_management.php" class="nav-link text-dark" data-menu="faculty">
+                            <i class="fas fa-users"></i> <span>Academic Personnel</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="" class="nav-link text-dark" data-menu="students">
-                            <i class="fas fa-user"></i> <span>Students</span>
+                        <a href="student_management.php" class="nav-link text-dark" data-menu="students">
+                            <i class="fas fa-id-card-alt"></i> <span>Students</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="academic_management.php" class="nav-link text-dark" data-menu="users">
+                            <i class="fas fa-school"></i> <span>Academic Management</span>
                         </a>
                     </li>
                     <li class="nav-item">

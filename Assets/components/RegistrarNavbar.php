@@ -23,14 +23,13 @@
 
       <!-- Right-aligned icons -->
       <div class="d-flex align-items-center">
-
         <!-- Profile Dropdown -->
         <div class="dropdown">
           <button class="btn bg-transparent border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false=">
             <i class="fas fa-user-circle"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="user_profile.php">Profile</a></li>
+            <li><a class="dropdown-item" href="registrar_profile.php">Profile</a></li>
             <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</a></li>
           </ul>
         </div>
@@ -52,7 +51,7 @@
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="AdminLogout.php">Logout</a>
+          <a class="btn btn-primary" href="RegistrarLogout.php">Logout</a>
         </div>
       </div>
     </div>

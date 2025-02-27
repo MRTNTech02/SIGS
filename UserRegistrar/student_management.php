@@ -1,21 +1,21 @@
 <?php 
   session_start();
   include ("../server_connection/db_connect.php");
-  if (empty($_SESSION["username"]) && empty ($_SESSION["a_password"])) {
+  if (empty($_SESSION["id_number"]) && empty ($_SESSION["user_password"])) {
     header("location: index.php");
   }
-  if (!empty($_SESSION["username"])){
-    $admin_id = $_SESSION["admin_id"];
+  if (!empty($_SESSION["id_number"])){
+    $user_id = $_SESSION["user_id"];
 
-    $sql = "SELECT * FROM admin_tbl WHERE admin_id=$admin_id";
+    $sql = "SELECT * FROM users_tbl WHERE user_id=$user_id";
     try{
       $result = $conn->prepare($sql);
       $result->execute();
 
       if($result->rowCount()>0){
         $data = $result->fetch(PDO::FETCH_ASSOC);
-        $admin_name = $data['a_fname'] . ' ' . $data['a_lname'] . ' ' . $data['a_suffix'];
-        $username = $data['username'];
+        $registrar_name = $data['u_fname'] . ' ' . $data['u_lname'] . ' ' . $data['u_suffix'] ;
+        $id_number = $data['id_number'];
       }
     }catch(Exception $e){
       echo "Error" . $e;
@@ -23,7 +23,7 @@
   };
   if (isset($_GET['logout'])) {
     session_destroy();
-    unset($_SESSION['username']);
+    unset($_SESSION['id_number']);
     header("location: index.php");
     }
 ?>
@@ -33,28 +33,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Academic Management</title>
+    <title>Student Management</title>
     <!-- Bootstrap -->
     <link rel="stylesheet" href="../../Bootstrap/css/bootstrap.min.css">
     <!-- Bootstrap Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <?php include '../Assets/components/Navbar.php'; ?>
+    <?php include '../Assets/components/RegistrarNavbar.php'; ?>
 
     <div class="d-flex">
-        <?php include '../Assets/components/AdminSidebar.php'; ?>
+        <?php include '../Assets/components/RegistrarSidebar.php'; ?>
 
         <!-- Main content -->
         <div class="content p-4 flex-grow-1">
-            <h4 class="text-muted">Academic Management</h4>
-                <!-- Navigation Buttons -->
-                <div class="d-flex justify-content-start mb-3">
-                    <a href="academic_management.php" class="btn btn-outline-dark me-2">Strands</a>
-                    <a href="grade_levels.php" class="btn btn-outline-dark me-2">Grade Levels</a>
-                    <a href="sections.php" class="btn btn-outline-dark me-2">Sections</a>
-                    <a href="subjects.php" class="btn btn-success me-2">Subjects</a>
-                </div>
+            <h4 class="text-muted">Student Management</h4>
             <div class="card table-container">
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-3">
@@ -63,9 +56,9 @@
                             <input type="text" class="form-control form-control-sm me-1" id="searchInput" placeholder="Search Name">
                             <button class="btn btn-success" id="searchButton">Search</button>
                         </div>
-                        <a href="AddSubject.php" class="btn btn-primary">
+                        <a href="AddStudent.php" class="btn btn-primary">
                             <i class="fas fa-plus"></i>
-                            Add New Subject Record
+                            Add New Student Record
                         </a>
                     </div>
 
@@ -75,13 +68,24 @@
                             <thead align="center">
                                 <tr>
                                     <th>No.</th>
-                                    <th>Subject Name</th>
+                                    <th>LRN</th>
+                                    <th>Name</th>
+                                    <th>Grade Level</th>
+                                    <th>Strand</th>
+                                    <th>Section</th>
+                                    <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="tableBody" align="center">
                                 <?php
-                                    $sql = "SELECT * FROM subjects_tbl";
+                                    $sql = "SELECT SC.assignment_id, A.lrn_number, A.s_fname, A.s_lname, A.s_suffix, A.s_status,
+                                    B.yl_name, C.strand_nn, D.section_name
+                                    FROM sc_assignments_tbl  AS SC INNER JOIN
+                                    students_tbl AS A on SC.fk_student_id=A.student_id
+                                    INNER JOIN year_levels_tbl AS B ON SC.fk_year_id=B.year_level_id
+                                    INNER JOIN strands_tbl AS C ON SC.fk_strand_id=C.strand_id
+                                    INNER JOIN sections_tbl AS D ON SC.fk_section_id=section_id";
                                     try
                                     {
                                         $result=$conn->prepare($sql);
@@ -95,16 +99,28 @@
                                                 echo "
                                                     <tr>
                                                         <td class='text-center'>{$i} </td>
-                                                        <td class='text-center'>{$row["subject_name"]}</td>
-                                                        <td>
-                                                            <a href='ViewSubject.php?subject_id={$row["subject_id"]}' class='btn btn-info btn-sm'>
-                                                                <i class='fas fa-eye'></i>
-                                                            </a>
-                                                            <a href='EditSubject.php?subject_id={$row["subject_id"]}' class='btn btn-warning btn-sm'>
-                                                                <i class='fas fa-pencil'></i>
-                                                            </a>
-                                                        </td>";
+                                                        <td class='text-center'>{$row["lrn_number"]}</td>
+                                                        <td>{$row["s_fname"]} {$row["s_lname"]} {$row["s_suffix"]}</td>
+                                                        <td>{$row["yl_name"]}</td>
+                                                        <td>{$row["strand_nn"]}</td>
+                                                        <td>{$row["section_name"]}</td>
+                                                        <td>{$row["s_status"]} </td>";
                                                         ?>
+                                                        <td class='text-center'>
+                                                            <?php 
+                                                            echo "
+                                                                <a href='ViewStudent.php?assignment_id={$row["assignment_id"]}' class='btn btn-info btn-sm'>
+                                                                    <i class='fas fa-eye'></i>
+                                                                </a>
+                                                                <a href='EditStudent.php?assignment_id={$row["assignment_id"]}' class='btn btn-warning btn-sm'>
+                                                                    <i class='fas fa-pencil'></i>
+                                                                </a>
+                                                                <a href='' class='btn btn-danger btn-sm'>
+                                                                    <i class='fas fa-trash'></i>
+                                                                </a>
+                                                            "; 
+                                                            ?>
+                                                        </td>
                                                     </tr>
                                                 <?php
                                                 $i++;
