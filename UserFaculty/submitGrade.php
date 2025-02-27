@@ -94,7 +94,17 @@
                             </thead>
                             <tbody id="tableBody" align="center">
                                 <?php
-                                    $sql = "SELECT * FROM subjects_tbl";
+                                    $sql = "SELECT 
+                                    subjects_tbl.subject_id, 
+                                    subjects_tbl.subject_name, 
+                                    strands_tbl.strand_nn, 
+                                    year_levels_tbl.yl_name, 
+                                    sections_tbl.section_name, 
+                                    subjects_tbl.subject_status 
+                                    FROM subjects_tbl
+                                    INNER JOIN strands_tbl ON strands_tbl.strand_id = subjects_tbl.subject_id
+                                    INNER JOIN year_levels_tbl ON year_levels_tbl.year_level_id = subjects_tbl.subject_id
+                                    INNER JOIN sections_tbl ON sections_tbl.section_id = subjects_tbl.subject_id";
                                     try
                                     {
                                         $result=$conn->prepare($sql);
@@ -108,9 +118,9 @@
                                                 echo "
                                                     <tr>
                                                         <td>{$row["subject_name"]}</td>
-                                                        <td>{$row["subject_status"]}</td>
-                                                        <td>{$row["subject_status"]}</td>
-                                                        <td>{$row["subject_status"]}</td>
+                                                        <td>{$row["strand_nn"]}</td>
+                                                        <td>{$row["yl_name"]}</td>
+                                                        <td>{$row["section_name"]}</td>
                                                         <td>{$row["subject_status"]}</td>
                                                         ";
                                                         ?>
@@ -119,9 +129,6 @@
                                                             echo "
                                                                 <a href='viewSubject.php?subject_id={$row["subject_id"]}' class='btn btn-info btn-sm'>
                                                                     <i class='fas fa-eye'></i>
-                                                                </a>
-                                                                <a href='EditUser.php?subject_id={$row["subject_id"]}' class='btn btn-warning btn-sm'>
-                                                                    <i class='fas fa-pencil'></i>
                                                                 </a>
                                                                 <a href='' class='btn btn-danger btn-sm'>
                                                                     <i class='fas fa-trash'></i>

@@ -1,74 +1,70 @@
 <?php 
-  session_start();
-  include ("../server_connection/db_connect.php");
-  if (empty($_SESSION["username"]) && empty ($_SESSION["a_password"])) {
-    header("location: index.php");
-    exit();
-  }
-  if (!empty($_SESSION["username"])){
-    $admin_id = $_SESSION["admin_id"];
+    session_start();
+    include ("../server_connection/db_connect.php");
 
-    $sql = "SELECT * FROM admin_tbl WHERE admin_id = :admin_id";
-    try{
-      $stmt = $conn->prepare($sql);
-      $stmt->bindParam(':admin_id', $admin_id, PDO::PARAM_INT);
-      $stmt->execute();
-
-      if($stmt->rowCount() > 0){
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-        $admin_name = $data['a_fname'] . ' ' . $data['a_lname'];
-        $username = $data['username'];
-      }
-    }catch(Exception $e){
-      echo "Error: " . $e->getMessage();
-      exit();
+    // Ensure user is logged in
+    if (!isset($_SESSION["id_number"]) || !isset($_SESSION["user_id"])) 
+    {
+        header("location: index.php");
     }
-  }
-  if (isset($_GET['logout'])) {
-    session_destroy();
-    unset($_SESSION['username']);
-    header("location: index.php");
-    exit();
-  }
+
+    $user_id = $_SESSION["user_id"];
+
+    $sql = "SELECT * FROM users_tbl WHERE user_id = :user_id";
+    try {
+        $result = $conn->prepare($sql);
+        $result->bindParam(':user_id', $user_id);
+        $result->execute();
+
+        if($result->rowCount() > 0){
+            $data = $result->fetch(PDO::FETCH_ASSOC);
+            $user_name = htmlspecialchars($data['u_fname'] . ' ' . $data['u_lname']);  
+            $id_number = htmlspecialchars($data['id_number']);
+        }
+    } 
+    catch(Exception $e) {
+        echo "Error: " . $e->getMessage();
+    }
+
+    // Logout logic
+    if (isset($_GET['logout'])) {
+        session_destroy();
+        unset($_SESSION['id_number']);
+        unset($_SESSION['user_id']);
+        header("location: index.php");
+        exit();
+}
 ?>
 
 <?php
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
         try {
-            $id_number = $_POST["id_number"];
-            $u_fname = $_POST["u_fname"];
-            $u_mname = $_POST["u_mname"];
-            $u_lname = $_POST["u_lname"];
-            $u_suffix = $_POST["u_suffix"];
-            $u_sex = $_POST["u_sex"];
-            $u_birthdate = $_POST["u_birthdate"];
-            $user_email = $_POST["user_email"];
-            $role = $_POST["role"];
-            $user_password = $_POST["user_password"];
-            $user_profile = $_POST["user_profile"];
-            $user_status = $_POST["user_status"];
+            $lrn_number = $_POST["lrn_number"];
+            $s_fname = $_POST["s_fname"];
+            $s_mname = $_POST["s_mname"];
+            $s_lname = $_POST["s_lname"];
+            $s_suffix = $_POST["s_suffix"];
+            $s_sex = $_POST["s_sex"];
+            $s_birthdate = $_POST["s_birthdate"];
+            $s_status = $_POST["s_status"];
 
-            if (empty($id_number) || empty($u_fname) || empty($u_lname) || empty($user_email) || empty($role) || empty($user_password)) {
+            if (empty($lrn_number) || empty($s_fname) || empty($s_lname)) {
                 throw new Exception("Required fields are missing.");
             }
 
-            $sql = "INSERT INTO users_tbl (id_number, u_fname, u_mname, u_lname, u_suffix, u_sex, u_birthdate, user_email, role, user_password, user_profile, user_status) 
-            VALUES (:id_number, :u_fname, :u_mname, :u_lname, :u_suffix, :u_sex, :u_birthdate, :user_email, :role, :user_password, :user_profile, :user_status)";
+            $sql = "INSERT INTO students_tbl (lrn_number, s_fname, s_mname, s_lname, s_suffix, s_sex, s_birthdate, s_status) 
+            VALUES (:lrn_number, :s_fname, :s_mname, :s_lname, :s_suffix, :s_sex, :s_birthdate, :s_status)";
 
             $stmt = $conn->prepare($sql);
             $stmt->execute([
-                ":id_number" => $id_number,
-                ":u_fname" => $u_fname,
-                ":u_mname" => $u_mname,
-                ":u_lname" => $u_lname,
-                ":u_suffix" => $u_suffix,
-                ":u_sex" => $u_sex,
-                ":u_birthdate" => $u_birthdate,
-                ":user_email" => $user_email,
-                ":role" => $role,
-                ":user_password" => $user_password,
-                ":user_profile" => $user_profile,
-                ":user_status" => $user_status,
+                ":lrn_number" => $lrn_number,
+                ":s_fname" => $s_fname,
+                ":s_mname" => $s_mname,
+                ":s_lname" => $s_lname,
+                ":s_suffix" => $s_suffix,
+                ":s_sex" => $s_sex,
+                ":s_birthdate" => $s_birthdate,
+                ":s_status" => $s_status,
             ]);
 
             echo "<script>
@@ -106,39 +102,34 @@
             <div class="main-content">
                 <div class="card">
                     <div class="card-body">
-                        <form method="post" action="AddUser.php">
-                            <input type="hidden" id="user_status" name="user_status" value="Active">
-                            <input type="hidden" id="user_profile" name="user_profile" value="userdefaultprofile.jpg">
+                        <form method="post" action="AddStudent.php">
+                            <input type="hidden" id="s_status" name="s_status" value="Active">
                             <div class="form-row">
                                 <div class="form-group col-md-3">
-                                    <label for="u_fname">First Name</label>
-                                    <input type="text" class="form-control" id="u_fname" name="u_fname" placeholder="First Name" required>
+                                    <label for="s_fname">First Name</label>
+                                    <input type="text" class="form-control" id="s_fname" name="s_fname" placeholder="First Name" required>
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <label for="u_mname">Middle Name</label>
-                                    <input type="text" class="form-control" id="u_mname" name="u_mname" placeholder="Middle Name">
+                                    <label for="s_mname">Middle Name</label>
+                                    <input type="text" class="form-control" id="s_mname" name="s_mname" placeholder="Middle Name">
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <label for="u_lname">Last Name</label>
-                                    <input type="text" class="form-control" id="u_lname" name="u_lname" placeholder="Last Name" required>
+                                    <label for="s_lname">Last Name</label>
+                                    <input type="text" class="form-control" id="s_lname" name="s_lname" placeholder="Last Name" required>
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <label for="u_suffix">Suffix</label>
-                                    <input type="text" class="form-control" id="u_suffix" name="u_suffix" placeholder="Suffix (Optional)">
+                                    <label for="s_suffix">Suffix</label>
+                                    <input type="text" class="form-control" id="s_suffix" name="s_suffix" placeholder="Suffix (Optional)">
                                 </div>
                             </div>
                             <div class="form-row">
-                                <div class="form-group col-md-3">
-                                    <label for="id_number">Learner's Reference Number (LRN)</label>
-                                    <input type="text" class="form-control" id="id_number" name="id_number" placeholder="ID Number" required>
+                                <div class="form-group col-md-4">
+                                    <label for="lrn_number">Learner's Reference Number (LRN)</label>
+                                    <input type="text" class="form-control" id="lrn_number" name="lrn_number" placeholder="ID Number" required>
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <label for="user_email">Email</label>
-                                    <input type="email" class="form-control" id="user_email" name="user_email" placeholder="Email" required>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label for="u_sex">Sex</label>
-                                    <select id="u_sex" name="u_sex" class="form-control" required>
+                                    <label for="s_sex">Sex</label>
+                                    <select id="s_sex" name="s_sex" class="form-control" required>
                                         <option value="" disabled selected>Select Sex</option>
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
@@ -146,11 +137,11 @@
                                     </select>
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <label for="u_birthdate">Birthdate</label>
-                                    <input type="date" class="form-control" id="u_birthdate" name="u_birthdate" required>
+                                    <label for="s_birthdate">Birthdate</label>
+                                    <input type="date" class="form-control" id="s_birthdate" name="s_birthdate" required>
                                 </div>
                             </div>
-                            <button type="submit" name="register" id="register" class="btn btn-success">Create User</button>
+                            <button type="submit" name="register" id="register" class="btn btn-success">Add Student</button>
                             <a href="students.php" class="btn btn-secondary"> Cancel </a>
                         </form>
                     </div>

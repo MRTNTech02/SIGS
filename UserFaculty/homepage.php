@@ -60,7 +60,21 @@
                         <div class="box d-flex flex-column justify-content-top align-items-center p-4 border border-success rounded" style="min-height: 150px; min-width: 100%;">
                             <div class="text-success text-bold mb-2">Students</div>
                             <span class="h2 text-dark mt-2">
-                                456
+                            <?php 
+                                    $sql = "SELECT count(*) countStudents FROM students_tbl WHERE s_status = 'Active'";
+
+                                    try {
+                                        $result = $conn->prepare($sql);
+                                        $result->execute();
+                                        $row = $result->fetch(PDO::FETCH_ASSOC); 
+
+                                        if ($row) {
+                                            echo "{$row['countStudents']}";
+                                        }
+                                    } catch (Exception $e) {
+                                        echo "Unexpected error has occurred! " . $e->getMessage();
+                                    }
+                                ?>
                             </span> 
                         </div>
                     </div>

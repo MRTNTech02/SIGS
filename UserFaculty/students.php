@@ -86,7 +86,13 @@
                             </thead>
                             <tbody id="tableBody" align="center">
                                 <?php
-                                    $sql = "SELECT * FROM students_tbl";
+                                    $sql = "SELECT SC.assignment_id, A.lrn_number, A.s_fname, A.s_lname, A.s_suffix, A.s_status,
+                                    B.yl_name, C.strand_nn, D.section_name
+                                    FROM sc_assignments_tbl  AS SC INNER JOIN
+                                    students_tbl AS A on SC.fk_student_id=A.student_id
+                                    INNER JOIN year_levels_tbl AS B ON SC.fk_year_id=B.year_level_id
+                                    INNER JOIN strands_tbl AS C ON SC.fk_strand_id=C.strand_id
+                                    INNER JOIN sections_tbl AS D ON SC.fk_section_id=section_id";
                                     try
                                     {
                                         $result=$conn->prepare($sql);
@@ -100,14 +106,15 @@
                                                 echo "
                                                     <tr>
                                                         <td class='text-center'>{$i} </td>
-                                                        <td class='text-center'>{$row["student_number"]}</td>
-                                                        <td>{$row["s_fname"]} {$row["s_lname"]}</td>
-                                                        <td class='text-center'>{$row["student_number"]}</td>
-                                                        <td class='text-center'>{$row["student_number"]}</td>
+                                                        <td class='text-center'>{$row["lrn_number"]}</td>
+                                                        <td>{$row["s_fname"]} {$row["s_lname"]} {$row["s_suffix"]}</td>
+                                                        <td>{$row["strand_nn"]}</td>
+                                                        <td>{$row["yl_name"]}</td>
+                                                        <td>{$row["section_name"]}</td>
                                                         <td>";
                                                         ?>
                                                         <td class='text-center'>
-                                                            <?php 
+                                                            <!--?php 
                                                             echo "
                                                                 <a href='ViewUser.php?student_id={$row["student_id"]}' class='btn btn-info btn-sm'>
                                                                     <i class='fas fa-eye'></i>
@@ -119,7 +126,7 @@
                                                                     <i class='fas fa-trash'></i>
                                                                 </a>
                                                             "; 
-                                                            ?>
+                                                            ?-->
                                                         </td>
                                                     </tr>
                                                 <?php
@@ -145,7 +152,6 @@
                         <div class="d-inline-flex align-items-center">
                             <label for="rowsPerPage" class="me-2 mb-0">Rows per page:</label>
                             <select id="rowsPerPage" class="form-select">
-                                <option value="5">5</option>
                                 <option value="10">10</option>
                                 <option value="15">15</option>
                                 <option value="20">20</option>
@@ -232,7 +238,7 @@
             min-width: 100%; 
         }
         .table-responsive {
-            height: 375px;
+            height: 350px;
         }
         .content { transition: margin-left 0.3s ease; }
         @media (max-width: 992px) { .content { margin-left: 0; } }

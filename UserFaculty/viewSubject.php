@@ -55,76 +55,58 @@
 
         <!-- Main content -->
         <div class="content p-4 flex-grow-1">
-            <h4 class="text-muted">Grade Level - Section</h4>
-            <div class="card table-container">
+            <div class="d-flex justify-content-between">
+                <h4 class="text-muted">Grade Level - Section</h4>
+                <a href="submitGrade.php" class="link-offset-2 link-underline link-underline-opacity-0">
+                <button type="button" class="btn btn-warning d-flex justify-content-center align-items-center text-center p-1">
+                    <i class="fas fa-arrow-left"></i> 
+                    <span class="text-wrap p-1" href="/submitGrade.php">Go Back</span> 
+                </button>
+                </a>
+            </div>
+            <div class="card table-container" >
                 <div class="card-body">
-                <div class="d-flex mb-3 p-1 bg-success rounded text-white fw-bold justify-content-center">Subject Name</div>
+                <div class="d-flex mb-3 p-1 bg-success rounded text-white fw-bold justify-content-between">Subject Name</div>
                 <div class="row">
                     <!-- First Filter -->
-                    <div class="col-12 col-sm-6 col-md-3 mb-2">
-                        <div class="btn-group w-100">
-                            <button type="button" class="btn border-black dropdown-toggle d-flex justify-content-between align-items-center text-center p-1 w-100" 
-                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-filter"></i> 
-                                <span class="text-wrap">Filter by School Year</span> 
-                            </button>
-                            <div class="dropdown-menu p-2 w-100">
-                                <label class="form-label small mb-1">Year Start</label>
-                                <input type="date" class="form-control form-control-sm mb-2" id="fromDate">
-                                <label class="form-label small mb-1">Year End</label>
-                                <input type="date" class="form-control form-control-sm" id="toDate">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Second Filter -->
-                    <div class="col-12 col-sm-6 col-md-3 mb-2">
-                        <div class="btn-group w-100">
-                            <button type="button" class="btn border-black dropdown-toggle d-flex justify-content-between align-items-center text-center p-1 w-100" 
-                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-filter"></i> 
-                                <span class="text-wrap">Filter by Semester</span> 
-                            </button>
-                            <div class="dropdown-menu p-2 w-100">
-                                <button class="dropdown-item filter-btn" data-filter="Subject">1st Semester</button>
-                                <button class="dropdown-item filter-btn" data-filter="Strand">2nd Semester</button>
-                            </div>
+                    <div class="col-12 col-sm-4 col-md-4 mb-2">
+                        <div class="d-flex mt-1 w-100 justify-content-center align-items-center">
+                            <h6 class="text-muted p-1">S.Y. 2024-2025</h6>
+                            <h6 class="text-muted p-1">1st Semester</h6>
                         </div>
                     </div>
 
                     <!-- Input Grades Button -->
-                    <div class="col-12 col-sm-6 col-md-3 mb-2">
+                    <div class="col-12 col-sm-4 col-md-4 mb-2">
                         <a href="#" class="btn border-black text-black bg-white text-start w-100">
                             <i class="fas fa-plus"></i> Input Grades
                         </a>
                     </div>
 
                     <!-- Submit Button -->
-                    <div class="col-12 col-sm-6 col-md-3 mb-2">
+                    <div class="col-12 col-sm-4 col-md-4 mb-2">
                         <a href="#" class="btn btn-success text-start w-100">
                             <i class="fa fa-check-circle"></i> Submit
                         </a>
                     </div>
                 </div>
 
-
-
                     <!-- Table -->
                     <div class="table-responsive">
                         <table class="table" id="studentsTable">
-                            <thead align="center">
+                            <thead>
                                 <tr>
-                                    <th>Subject</th>
-                                    <th>Strand</th>
-                                    <th>Grade Level</th>
-                                    <th>Section</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
+                                    <th>Name</th>
+                                    <th>Grade</th>
                                 </tr>
                             </thead>
                             <tbody id="tableBody" align="center">
                                 <?php
-                                    $sql = "SELECT * FROM subjects_tbl";
+                                    $sql = "SELECT SC.assignment_id, A.student_id, A.s_fname, A.s_lname, A.s_status,
+                                    B.student_grade_id, B.student_grade
+                                    FROM sc_assignments_tbl  AS SC INNER JOIN
+                                    students_tbl AS A on SC.fk_student_id=A.student_id
+                                    INNER JOIN student_grades_tbl AS B ON SC.fk_student_id=B.student_grade_id";
                                     try
                                     {
                                         $result=$conn->prepare($sql);
@@ -137,29 +119,27 @@
                                             {
                                                 echo "
                                                     <tr>
-                                                        <td>{$row["subject_name"]}</td>
-                                                        <td>{$row["subject_status"]}</td>
-                                                        <td>{$row["subject_status"]}</td>
-                                                        <td>{$row["subject_status"]}</td>
+                                                        <td align='left'>{$row["s_lname"]}, {$row["s_fname"]} </td>
+                                                        <td align='center'>{$row["student_grade"]}</td>
                                                         <td>";
                                                         
                                                         ?>
-                                                        <td class='text-center'>
-                                                            <?php 
-                                                            echo "
-                                                                <a href='ViewUser.php?user_id={$row["subject_id"]}' class='btn btn-info btn-sm'>
-                                                                    <i class='fas fa-eye'></i>
-                                                                </a>
-                                                                <a href='EditUser.php?user_id={$row["subject_id"]}' class='btn btn-warning btn-sm'>
-                                                                    <i class='fas fa-pencil'></i>
-                                                                </a>
-                                                                <a href='' class='btn btn-danger btn-sm'>
-                                                                    <i class='fas fa-trash'></i>
-                                                                </a>
-                                                            "; 
+                                                        <!-- <td class='text-center'> -->
+                                                            <!-- <--?php  
+                                                            // echo "
+                                                            //     <a href='ViewUser.php?user_id={$row["subject_id"]}' class='btn btn-info btn-sm'>
+                                                            //         <i class='fas fa-eye'></i>
+                                                            //     </a>
+                                                            //     <a href='EditUser.php?user_id={$row["subject_id"]}' class='btn btn-warning btn-sm'>
+                                                            //         <i class='fas fa-pencil'></i>
+                                                            //     </a>
+                                                            //     <a href='' class='btn btn-danger btn-sm'>
+                                                            //         <i class='fas fa-trash'></i>
+                                                            //     </a>
+                                                            // "; 
                                                             ?>
-                                                        </td>
-                                                    </tr>
+                                                        </td--> 
+                                                    </tr> 
                                                 <?php
                                                 $i++;
                                             }
@@ -183,7 +163,6 @@
                         <div class="d-inline-flex align-items-center">
                             <label for="rowsPerPage" class="me-2 mb-0">Rows per page:</label>
                             <select id="rowsPerPage" class="form-select">
-                                <option value="5">5</option>
                                 <option value="10">10</option>
                                 <option value="15">15</option>
                                 <option value="20">20</option>
@@ -271,7 +250,7 @@
             min-width: 100%; 
         }
         .table-responsive {
-            height: 375px;
+            height: 40vh;
         }
         .content { transition: margin-left 0.3s ease; }
         @media (max-width: 992px) { .content { margin-left: 0; } }
