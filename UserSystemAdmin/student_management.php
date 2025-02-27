@@ -14,7 +14,7 @@
 
       if($result->rowCount()>0){
         $data = $result->fetch(PDO::FETCH_ASSOC);
-        $admin_name = $data['a_fname'] . ' ' . $data['a_lname'] . ' ' . $data['a_suffix'];
+        $admin_name = $data['a_fname'] . ' ' . $data['a_lname'] ;
         $username = $data['username'];
       }
     }catch(Exception $e){
@@ -33,7 +33,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Management</title>
+    <title>Student Management</title>
     <!-- Bootstrap -->
     <link rel="stylesheet" href="../../Bootstrap/css/bootstrap.min.css">
     <!-- Bootstrap Font Awesome Icons -->
@@ -47,7 +47,7 @@
 
         <!-- Main content -->
         <div class="content p-4 flex-grow-1">
-            <h4 class="text-muted">User Management</h4>
+            <h4 class="text-muted">Student Management</h4>
             <div class="card table-container">
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-3">
@@ -56,9 +56,9 @@
                             <input type="text" class="form-control form-control-sm me-1" id="searchInput" placeholder="Search Name">
                             <button class="btn btn-success" id="searchButton">Search</button>
                         </div>
-                        <a href="AddUser.php" class="btn btn-primary">
+                        <a href="AddStudent.php" class="btn btn-primary">
                             <i class="fas fa-plus"></i>
-                            Add New User
+                            Add New Student Record
                         </a>
                     </div>
 
@@ -68,16 +68,24 @@
                             <thead align="center">
                                 <tr>
                                     <th>No.</th>
-                                    <th>ID Number</th>
+                                    <th>LRN</th>
                                     <th>Name</th>
-                                    <th>Role</th>
+                                    <th>Grade Level</th>
+                                    <th>Strand</th>
+                                    <th>Section</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="tableBody" align="center">
                                 <?php
-                                    $sql = "SELECT * FROM users_tbl";
+                                    $sql = "SELECT SC.assignment_id, A.lrn_number, A.s_fname, A.s_lname, A.s_suffix, A.s_status,
+                                    B.yl_name, C.strand_nn, D.section_name
+                                    FROM sc_assignments_tbl  AS SC INNER JOIN
+                                    students_tbl AS A on SC.fk_student_id=A.student_id
+                                    INNER JOIN year_levels_tbl AS B ON SC.fk_year_id=B.year_level_id
+                                    INNER JOIN strands_tbl AS C ON SC.fk_strand_id=C.strand_id
+                                    INNER JOIN sections_tbl AS D ON SC.fk_section_id=section_id";
                                     try
                                     {
                                         $result=$conn->prepare($sql);
@@ -91,51 +99,26 @@
                                                 echo "
                                                     <tr>
                                                         <td class='text-center'>{$i} </td>
-                                                        <td class='text-center'>{$row["id_number"]}</td>
-                                                        <td>{$row["u_fname"]} {$row["u_lname"]} {$row["u_suffix"]}</td>
-                                                        <td>";
-                                                        if ($row["role"] == 'Faculty') {
-                                                            echo "<span class='role-label label-faculty'>{$row["role"]}</span>";
-                                                        } else {
-                                                            echo "<span class='role-label label-registrar'>{$row["role"]}</span>";
-                                                        }                                                        
-                                                        echo "
-                                                        </td>
-                                                        <td>{$row["user_status"]} </td>";
+                                                        <td class='text-center'>{$row["lrn_number"]}</td>
+                                                        <td>{$row["s_fname"]} {$row["s_lname"]} {$row["s_suffix"]}</td>
+                                                        <td>{$row["yl_name"]}</td>
+                                                        <td>{$row["strand_nn"]}</td>
+                                                        <td>{$row["section_name"]}</td>
+                                                        <td>{$row["s_status"]} </td>";
                                                         ?>
                                                         <td class='text-center'>
                                                             <?php 
-                                                                if ($row["role"] == 'Faculty'){
-                                                                    echo 
-                                                                    "<a href='ViewFacultyUser.php?user_id={$row["user_id"]}' class='btn btn-info btn-sm'>
-                                                                        <i class='fas fa-eye'></i>
-                                                                    </a>";
-                                                                } else {
-                                                                    echo
-                                                                    "<a href='ViewRegistrarUser.php?user_id={$row["user_id"]}' class='btn btn-info btn-sm'>
-                                                                        <i class='fas fa-eye'></i>
-                                                                    </a>";
-                                                                }
-                                                                echo "
-                                                                    <a href='EditUser.php?user_id={$row["user_id"]}' class='btn btn-warning btn-sm'>
-                                                                        <i class='fas fa-pencil'></i>
-                                                                    </a>
-                                                                ";
-                                                            ?>
-                                                            <?php 
-                                                                if ($row["user_status"] == 'Active'){
-                                                                    echo "
-                                                                        <a href='' class='btn btn-danger btn-sm'>
-                                                                            <i class='fas fa-toggle-off'></i>
-                                                                        </a>
-                                                                    ";
-                                                                }else{
-                                                                    echo "
-                                                                        <a href='' class='btn btn-success btn-sm'>
-                                                                            <i class='fas fa-toggle-on'></i>
-                                                                        </a>
-                                                                    ";
-                                                                }
+                                                            echo "
+                                                                <a href='ViewStudent.php?assignment_id={$row["assignment_id"]}' class='btn btn-info btn-sm'>
+                                                                    <i class='fas fa-eye'></i>
+                                                                </a>
+                                                                <a href='EditStudent.php?assignment_id={$row["assignment_id"]}' class='btn btn-warning btn-sm'>
+                                                                    <i class='fas fa-pencil'></i>
+                                                                </a>
+                                                                <a href='' class='btn btn-danger btn-sm'>
+                                                                    <i class='fas fa-trash'></i>
+                                                                </a>
+                                                            "; 
                                                             ?>
                                                         </td>
                                                     </tr>
@@ -255,7 +238,6 @@
         .role-label { font-weight: bold; padding: 2px 8px; border-radius: 12px; font-size: 12px; display: inline-block; width: 100px; text-align: center; }
         .label-faculty { background-color: #b2dba1; color: #3b7a00; }
         .label-registrar { background-color: #ffcc99; color: #cc5200; }
-        
     </style>
 </body>
 </html>

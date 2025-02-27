@@ -25,17 +25,27 @@
                     </li>
                     <li class="nav-item">
                         <a href="user_management.php" class="nav-link text-dark" data-menu="users">
-                            <i class="fas fa-users"></i> <span>User Management</span>
+                            <i class="fas fa-users-cog"></i> <span>User Management</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="student_management.php" class="nav-link text-dark" data-menu="users">
+                            <i class="fas fa-id-card-alt"></i> <span>Student Management</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="academic_management.php" class="nav-link text-dark" data-menu="users">
+                            <i class="fas fa-school"></i> <span>Academic Management</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="log_monitoring.php" class="nav-link text-dark" data-menu="logs">
-                            <i class="fas fa-cog"></i> <span>Log Monitoring</span>
+                            <i class="fas fa-history"></i> <span>Log Monitoring</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="user_support.php" class="nav-link text-dark" data-menu="support">
-                            <i class="fas fa-user-md"></i> <span>User Support</span>
+                            <i class="fas fa-life-ring"></i> <span>User Support</span>
                         </a>
                     </li>
                 </ul>

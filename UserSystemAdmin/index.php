@@ -2,7 +2,8 @@
   session_start();
   include ("../server_connection/db_connect.php");
   $errors = array();
-  $_SESSION['success'] ="";
+  $_SESSION['success'] = "";
+
   if(isset($_POST['submit'])){
     $username = $_POST["username"];
     $a_password = $_POST["a_password"];
@@ -15,24 +16,41 @@
     }
 
     if (count($errors) == 0){
-      $sql = "SELECT * FROM admin_tbl WHERE username='$username'
-              AND a_password = '$a_password'";
+      $sql = "SELECT * FROM admin_tbl WHERE username=:username AND a_password=:a_password";
       $result = $conn->prepare($sql);
+      $result->bindParam(':username', $username, PDO::PARAM_STR);
+      $result->bindParam(':a_password', $a_password, PDO::PARAM_STR);
       $result->execute();
-      if($result->rowcount()==1){
+
+      if($result->rowCount() == 1){
         $data = $result->fetch(PDO::FETCH_ASSOC);
+
+        // Store in session
         $_SESSION['username'] = $data['username'];
         $_SESSION['a_password'] = $data['a_password'];
         $_SESSION['admin_id'] = $data['admin_id'];
 
+        // Define admin_id before using it
+        $admin_id = $data['admin_id'];
+
+        try {
+          // Log login event for admins
+          $log_stmt = $conn->prepare("INSERT INTO user_logs_tbl (fk_admin_id, role, action) VALUES (:admin_id, 'Admin', 'Login')");
+          $log_stmt->bindParam(':admin_id', $admin_id, PDO::PARAM_INT);
+          $log_stmt->execute();
+        } catch (PDOException $e) {
+          die("Error in executing statement: " . $e->getMessage());
+        }
+
         header("location: dashboard.php");
-      }
-      else{
+        exit();
+      } else {
         array_push($errors, "Username or password incorrect");
       }
     }
-  };
+  }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

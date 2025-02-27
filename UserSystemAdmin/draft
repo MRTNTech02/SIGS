@@ -1,0 +1,12 @@
+SELECT logs.log_id, 
+       COALESCE(
+           CONCAT(users.u_fname, ' ', users.u_lname, ' ', IFNULL(users.u_suffix, '')), 
+           CONCAT(admins.a_fname, ' ', admins.a_lname, ' ', IFNULL(admins.a_suffix, ''))
+       ) AS full_name, 
+       logs.role, 
+       logs.action, 
+       logs.log_ts 
+FROM user_logs_tbl as logs
+LEFT JOIN users_tbl as users ON logs.fk_user_id = users.user_id 
+LEFT JOIN admin_tbl as admins ON logs.fk_admin_id = admins.admin_id
+ORDER BY logs.log_id DESC;

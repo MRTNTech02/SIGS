@@ -51,7 +51,21 @@
                         <div class="box d-flex flex-column justify-content-center align-items-center p-4 border border-success rounded" style="min-height: 150px; min-width: 100%;">
                             <div class="text-success text-bold mb-2">Students</div>
                             <span class="h4 text-dark">
-                                456
+                                <?php 
+                                    $sql = "SELECT count(*) countStudents FROM students_tbl WHERE s_status = 'Active'";
+
+                                    try {
+                                        $result = $conn->prepare($sql);
+                                        $result->execute();
+                                        $row = $result->fetch(PDO::FETCH_ASSOC); 
+
+                                        if ($row) {
+                                            echo "{$row['countStudents']}";
+                                        }
+                                    } catch (Exception $e) {
+                                        echo "Unexpected error has occurred! " . $e->getMessage();
+                                    }
+                                ?>
                             </span> 
                         </div>
                     </div>
@@ -111,7 +125,64 @@
                     <div class="col-12 col-sm-8 col-md-8 col-lg-8 mb-3">
                         <div class="box d-flex flex-column p-4 border border-success rounded" style="min-height: 50vh; width: 100%;">
                             <div class="text-success text-bold mb-2">User Logs</div> 
-                            <span class="h4 text-dark">56</span> 
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="studentsTable">
+                                    <thead align="center">
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Name</th>
+                                            <th>Role</th>
+                                            <th>Action</th>
+                                            <th>Time Stamp</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableBody" align="center">
+                                        <?php
+                                            $sql = "SELECT logs.log_id, 
+                                                COALESCE(
+                                                    CONCAT(users.u_fname, ' ', users.u_lname, ' ', IFNULL(users.u_suffix, '')), 
+                                                    CONCAT(admins.a_fname, ' ', admins.a_lname, ' ', IFNULL(admins.a_suffix, ''))
+                                                ) AS full_name, 
+                                                logs.role, 
+                                                logs.action, 
+                                                logs.log_ts 
+                                            FROM user_logs_tbl as logs
+                                            LEFT JOIN users_tbl as users ON logs.fk_user_id = users.user_id 
+                                            LEFT JOIN admin_tbl as admins ON logs.fk_admin_id = admins.admin_id
+                                            ORDER BY logs.log_id DESC";
+                                            try
+                                            {
+                                                $result=$conn->prepare($sql);
+                                                $result->execute();
+                                                if($result->rowcount()>0)
+                                                {
+                                                    $i=1;
+                                                    while($row=$result->fetch(PDO::FETCH_ASSOC))
+                                                    {
+                                                        echo "
+                                                            <tr>
+                                                                <td class='text-center'>{$i} </td>
+                                                                <td class='text-center'>{$row["full_name"]}</td>
+                                                                <td>{$row["role"]}</td>
+                                                                <td>{$row["action"]}</td>
+                                                                <td>{$row["log_ts"]}</td>
+                                                            </tr>";
+                                                        $i++;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    echo "<tr><td colspan='5'> No records found. </td></tr>";
+                                                }
+                                            }
+                                            catch(Exception $e)
+                                            {
+                                                echo "Unexpected error has occurred!" . $e->getMessage();
+                                            }
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

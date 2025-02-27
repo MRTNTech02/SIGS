@@ -33,7 +33,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Management</title>
+    <title>Academic Management</title>
     <!-- Bootstrap -->
     <link rel="stylesheet" href="../../Bootstrap/css/bootstrap.min.css">
     <!-- Bootstrap Font Awesome Icons -->
@@ -47,7 +47,14 @@
 
         <!-- Main content -->
         <div class="content p-4 flex-grow-1">
-            <h4 class="text-muted">User Management</h4>
+            <h4 class="text-muted">Academic Management</h4>
+                <!-- Navigation Buttons -->
+                <div class="d-flex justify-content-start mb-3">
+                    <a href="academic_management.php" class="btn btn-success me-2">Strands</a>
+                    <a href="grade_levels.php" class="btn btn-outline-dark me-2">Grade Levels</a>
+                    <a href="sections.php" class="btn btn-outline-dark me-2">Sections</a>
+                    <a href="subjects.php" class="btn btn-outline-dark me-2">Subjects</a>
+                </div>
             <div class="card table-container">
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-3">
@@ -56,9 +63,9 @@
                             <input type="text" class="form-control form-control-sm me-1" id="searchInput" placeholder="Search Name">
                             <button class="btn btn-success" id="searchButton">Search</button>
                         </div>
-                        <a href="AddUser.php" class="btn btn-primary">
+                        <a href="AddStrand.php" class="btn btn-primary">
                             <i class="fas fa-plus"></i>
-                            Add New User
+                            Add New Strand Record
                         </a>
                     </div>
 
@@ -68,16 +75,14 @@
                             <thead align="center">
                                 <tr>
                                     <th>No.</th>
-                                    <th>ID Number</th>
-                                    <th>Name</th>
-                                    <th>Role</th>
-                                    <th>Status</th>
+                                    <th>Strand Name</th>
+                                    <th>Abreviation</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="tableBody" align="center">
                                 <?php
-                                    $sql = "SELECT * FROM users_tbl";
+                                    $sql = "SELECT * FROM strands_tbl";
                                     try
                                     {
                                         $result=$conn->prepare($sql);
@@ -91,53 +96,14 @@
                                                 echo "
                                                     <tr>
                                                         <td class='text-center'>{$i} </td>
-                                                        <td class='text-center'>{$row["id_number"]}</td>
-                                                        <td>{$row["u_fname"]} {$row["u_lname"]} {$row["u_suffix"]}</td>
-                                                        <td>";
-                                                        if ($row["role"] == 'Faculty') {
-                                                            echo "<span class='role-label label-faculty'>{$row["role"]}</span>";
-                                                        } else {
-                                                            echo "<span class='role-label label-registrar'>{$row["role"]}</span>";
-                                                        }                                                        
-                                                        echo "
-                                                        </td>
-                                                        <td>{$row["user_status"]} </td>";
+                                                        <td class='text-center'>{$row["strand_name"]}</td>
+                                                        <td>{$row["strand_nn"]}</td>
+                                                        <td>
+                                                            <a href='EditStrand.php?strand_id={$row["strand_id"]}' class='btn btn-warning btn-sm'>
+                                                                <i class='fas fa-pencil'></i>
+                                                            </a>
+                                                        </td>";
                                                         ?>
-                                                        <td class='text-center'>
-                                                            <?php 
-                                                                if ($row["role"] == 'Faculty'){
-                                                                    echo 
-                                                                    "<a href='ViewFacultyUser.php?user_id={$row["user_id"]}' class='btn btn-info btn-sm'>
-                                                                        <i class='fas fa-eye'></i>
-                                                                    </a>";
-                                                                } else {
-                                                                    echo
-                                                                    "<a href='ViewRegistrarUser.php?user_id={$row["user_id"]}' class='btn btn-info btn-sm'>
-                                                                        <i class='fas fa-eye'></i>
-                                                                    </a>";
-                                                                }
-                                                                echo "
-                                                                    <a href='EditUser.php?user_id={$row["user_id"]}' class='btn btn-warning btn-sm'>
-                                                                        <i class='fas fa-pencil'></i>
-                                                                    </a>
-                                                                ";
-                                                            ?>
-                                                            <?php 
-                                                                if ($row["user_status"] == 'Active'){
-                                                                    echo "
-                                                                        <a href='' class='btn btn-danger btn-sm'>
-                                                                            <i class='fas fa-toggle-off'></i>
-                                                                        </a>
-                                                                    ";
-                                                                }else{
-                                                                    echo "
-                                                                        <a href='' class='btn btn-success btn-sm'>
-                                                                            <i class='fas fa-toggle-on'></i>
-                                                                        </a>
-                                                                    ";
-                                                                }
-                                                            ?>
-                                                        </td>
                                                     </tr>
                                                 <?php
                                                 $i++;
@@ -255,7 +221,6 @@
         .role-label { font-weight: bold; padding: 2px 8px; border-radius: 12px; font-size: 12px; display: inline-block; width: 100px; text-align: center; }
         .label-faculty { background-color: #b2dba1; color: #3b7a00; }
         .label-registrar { background-color: #ffcc99; color: #cc5200; }
-        
     </style>
 </body>
 </html>
