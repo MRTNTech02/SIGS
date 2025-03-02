@@ -1,21 +1,21 @@
 <?php 
   session_start();
   include ("../server_connection/db_connect.php");
-  if (empty($_SESSION["username"]) && empty ($_SESSION["a_password"])) {
+  if (empty($_SESSION["id_number"]) && empty ($_SESSION["user_password"])) {
     header("location: index.php");
   }
-  if (!empty($_SESSION["username"])){
-    $admin_id = $_SESSION["admin_id"];
+  if (!empty($_SESSION["id_number"])){
+    $user_id = $_SESSION["user_id"];
 
-    $sql = "SELECT * FROM admin_tbl WHERE admin_id=$admin_id";
+    $sql = "SELECT * FROM users_tbl WHERE user_id=$user_id";
     try{
       $result = $conn->prepare($sql);
       $result->execute();
 
       if($result->rowCount()>0){
         $data = $result->fetch(PDO::FETCH_ASSOC);
-        $admin_name = $data['a_fname'] . ' ' . $data['a_lname'] . ' ' . $data['a_suffix'];
-        $username = $data['username'];
+        $registrar_name = $data['u_fname'] . ' ' . $data['u_lname'] . ' ' . $data['u_suffix'] ;
+        $id_number = $data['id_number'];
       }
     }catch(Exception $e){
       echo "Error" . $e;
@@ -23,7 +23,7 @@
   };
   if (isset($_GET['logout'])) {
     session_destroy();
-    unset($_SESSION['username']);
+    unset($_SESSION['id_number']);
     header("location: index.php");
     }
 ?>
@@ -40,14 +40,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <?php include '../Assets/components/Navbar.php'; ?>
+    <?php include '../Assets/components/RegistrarNavbar.php'; ?>
 
     <div class="d-flex">
-        <?php include '../Assets/components/AdminSidebar.php'; ?>
+        <?php include '../Assets/components/RegistrarSidebar.php'; ?>
 
         <!-- Main content -->
         <div class="content p-4 flex-grow-1">
-            <h4 class="text-muted">Bug Reports</h4>
+            <h4 class="text-muted">My Reported Bugs</h4>
             <div class="card table-container">
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-3">
@@ -56,6 +56,10 @@
                             <input type="text" class="form-control form-control-sm me-1" id="searchInput" placeholder="Search Name">
                             <button class="btn btn-success" id="searchButton">Search</button>
                         </div>
+                        <a href="raiseTicket.php" class="btn btn-primary">
+                            <i class="fas fa-plus"></i>
+                            Raise a System Issue
+                        </a>
                     </div>
 
                     <!-- Table -->
@@ -72,7 +76,7 @@
                             </thead>
                             <tbody id="tableBody" align="center">
                                 <?php
-                                    $sql = "SELECT * FROM bugs_tbl ORDER BY bug_status DESC";
+                                    $sql = "SELECT * FROM bugs_tbl WHERE fk_user_id=$user_id ORDER BY bug_status DESC";
                                     try
                                     {
                                         $result=$conn->prepare($sql);
@@ -204,20 +208,6 @@
         }
         .table-responsive {
             height: 375px;
-        }
-        .label-completed {
-            background-color: #b2dba1; 
-            color: #3b7a00;           
-        }
-
-        .label-ongoing {
-            background-color: #add8e6;  
-            color: #004080;            
-        }
-
-        .label-pending {
-            background-color: #ffcc99; 
-            color: #cc5200;          
         }
         .content { transition: margin-left 0.3s ease; }
         @media (max-width: 992px) { .content { margin-left: 0; } }

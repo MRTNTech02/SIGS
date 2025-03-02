@@ -27,13 +27,42 @@
     header("location: index.php");
     }
 ?>
+<!-- fetching record -->
+<?php
+    if (isset($_GET['f_assignment_id'])) {
+        $f_assignment_id = $_GET['f_assignment_id'];
+
+        $sql = "SELECT * FROM
+        faculty_assignments_tbl AS FA INNER JOIN subjects_tbl AS A ON FA.fk_subject_id=A.subject_id
+        INNER JOIN year_levels_tbl AS B ON FA.fk_year_id=B.year_level_id 
+        INNER JOIN strands_tbl AS C ON FA.fk_strand_id=C.strand_id 
+        INNER JOIN sections_tbl AS D ON FA.fk_section_id=section_id 
+        INNER JOIN users_tbl As E ON FA.fk_user_id=E.user_id WHERE FA.f_assignment_id='$f_assignment_id'";
+        try{
+        $result = $conn->prepare($sql);
+        $result->execute();
+
+        if($result->rowCount()>0){
+            $data = $result->fetch(PDO::FETCH_ASSOC);
+            $subject_name = $data["subject_name"];
+            $yl_name = $data["yl_name"];
+            $strand_nn = $data["strand_nn"];
+            $section_id = $data["section_id"];
+            $student_id = $data["student_id"];
+            $subject_id = $data["subject_id"];
+        }
+        }catch(Exception $e){
+        echo "Error" . $e;
+        }
+    };
+?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Academic Management</title>
+    <title>View Assigned Subject</title>
     <!-- Bootstrap -->
     <link rel="stylesheet" href="../../Bootstrap/css/bootstrap.min.css">
     <!-- Bootstrap Font Awesome Icons -->
@@ -47,7 +76,7 @@
 
         <!-- Main content -->
         <div class="content p-4 flex-grow-1">
-            <h4 class="text-muted">Bug Reports</h4>
+            <h4 class="text-muted"><?php echo $yl_name . ' | ' . $strand_nn . ' | ' . $subject_name ?></h4>
             <div class="card table-container">
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-3">
@@ -64,19 +93,28 @@
                             <thead align="center">
                                 <tr>
                                     <th>No.</th>
-                                    <th>Ticket Number</th>
-                                    <th>Short Description</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
+                                    <th>Student Name</th>
+                                    <th>Grade</th>
                                 </tr>
                             </thead>
                             <tbody id="tableBody" align="center">
                                 <?php
-                                    $sql = "SELECT * FROM bugs_tbl ORDER BY bug_status DESC";
+                                    $sql = "SELECT stud.s_fname, stud.s_lname, stud.s_suffix, sub.subject_name, teach.u_fname, 
+                                    teach.u_lname, teach.u_suffix, subs_t.semester, subs_t.academic_year, grade.student_grade 
+                                    FROM subjects_taking_tbl AS subs_t
+                                    LEFT JOIN student_grades_tbl AS grade ON subs_t.s_taking_id = grade.fk_student_subject_id 
+                                    LEFT JOIN subjects_tbl AS sub ON subs_t.fk_subject_id = sub.subject_id
+                                    LEFT JOIN sc_assignments_tbl AS sc ON subs_t.fk_assignment_id = sc.assignment_id
+                                    LEFT JOIN sections_tbl AS sec ON sc.fk_section_id=sec.section_id
+                                    LEFT JOIN students_tbl AS stud ON sc.fk_student_id = stud.student_id 
+                                    LEFT JOIN users_tbl AS teach ON grade.fk_faculty_id = teach.user_id
+                                    WHERE sub.subject_id = $subject_id
+                                    AND sec.section_id = $section_id";
                                     try
                                     {
                                         $result=$conn->prepare($sql);
                                         $result->execute();
+                                        // $status = $_SESSION['status'];
                                         if($result->rowcount()>0)
                                         {
                                             $i=1;
@@ -85,18 +123,11 @@
                                                 echo "
                                                     <tr>
                                                         <td class='text-center'>{$i} </td>
-                                                        <td class='text-center'>{$row["bug_ticket"]}</td>
-                                                        <td class='text-center'>{$row["short_desc"]}</td>
-                                                        <td class='text-center'>{$row["bug_status"]}</td>
-                                                        <td>
-                                                            <a href='ViewTicket.php?bug_id={$row["bug_id"]}' class='btn btn-info btn-sm'>
-                                                                <i class='fas fa-eye'></i>
-                                                            </a>
-                                                        </td>";
-                                                        ?>
-                                                    </tr>
-                                                <?php
+                                                        <td>{$row["s_fname"]} {$row["s_lname"]} {$row["s_suffix"]}</td>
+                                                        <td>{$row["student_grade"]}</td>
+                                                    </tr>";
                                                 $i++;
+                                                
                                             }
                                         }
                                         else
@@ -197,6 +228,7 @@
       });
     </script>
 
+
     <style>
         .table-container { 
             margin-top: 20px; 
@@ -205,26 +237,13 @@
         .table-responsive {
             height: 375px;
         }
-        .label-completed {
-            background-color: #b2dba1; 
-            color: #3b7a00;           
-        }
-
-        .label-ongoing {
-            background-color: #add8e6;  
-            color: #004080;            
-        }
-
-        .label-pending {
-            background-color: #ffcc99; 
-            color: #cc5200;          
-        }
         .content { transition: margin-left 0.3s ease; }
         @media (max-width: 992px) { .content { margin-left: 0; } }
         #rowsPerPage { width: auto; }
         .role-label { font-weight: bold; padding: 2px 8px; border-radius: 12px; font-size: 12px; display: inline-block; width: 100px; text-align: center; }
         .label-faculty { background-color: #b2dba1; color: #3b7a00; }
         .label-registrar { background-color: #ffcc99; color: #cc5200; }
+        
     </style>
 </body>
 </html>

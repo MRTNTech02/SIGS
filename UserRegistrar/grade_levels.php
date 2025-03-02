@@ -54,6 +54,7 @@
                     <a href="grade_levels.php" class="btn btn-success me-2">Grade Levels</a>
                     <a href="sections.php" class="btn btn-outline-dark me-2">Sections</a>
                     <a href="subjects.php" class="btn btn-outline-dark me-2">Subjects</a>
+                    <a href="e_sigs.php" class="btn btn-outline-dark me-2">E-Signatures</a>
                 </div>
             <div class="card table-container">
                 <div class="card-body">

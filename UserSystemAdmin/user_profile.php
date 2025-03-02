@@ -1,3 +1,44 @@
+<?php 
+  session_start();
+  include ("../server_connection/db_connect.php");
+  if (empty($_SESSION["username"]) && empty ($_SESSION["a_password"])) {
+    header("location: index.php");
+    exit();
+  }
+  if (!empty($_SESSION["username"])){
+    $admin_id = $_SESSION["admin_id"];
+
+    $sql = "SELECT * FROM admin_tbl WHERE admin_id = :admin_id";
+    try{
+      $stmt = $conn->prepare($sql);
+      $stmt->bindParam(':admin_id', $admin_id, PDO::PARAM_INT);
+      $stmt->execute();
+
+      if($stmt->rowCount() > 0){
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        $admin_name = $data['a_fname'] . ' ' . $data['a_lname'] . ' ' . $data['a_suffix'];
+        $username = $data['username'];
+        $a_email = $data['a_email'];
+        $a_fname = $data['a_fname'];
+        $a_mname = $data['a_mname'];
+        $a_lname = $data['a_lname'];
+        $a_suffix = $data['a_suffix'];
+        $a_sex = $data['a_sex'];
+        $a_birthdate = $data['a_birthdate'];
+      }
+    }catch(Exception $e){
+      echo "Error: " . $e->getMessage();
+      exit();
+    }
+  }
+  if (isset($_GET['logout'])) {
+    session_destroy();
+    unset($_SESSION['username']);
+    header("location: index.php");
+    exit();
+  }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,38 +81,44 @@
                                 <form>
                                     <div class="form-row">
                                         <div class="form-group col-md-3">
-                                            <label for="firstName">First Name</label>
-                                            <input type="text" class="form-control" id="firstName" value="John">
+                                            <label for="a_fname">First Name</label>
+                                            <input type="text" class="form-control" name="a_fname" id="a_fname" value="<?php echo $a_fname ?>">
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <label for="middleName">Middle Name</label>
-                                            <input type="text" class="form-control" id="middleName">
+                                            <label for="a_mname">Middle Name</label>
+                                            <input type="text" class="form-control" name="a_mname" id="a_mname" value="<?php echo $a_mname ?>">
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <label for="lastName">Last Name</label>
-                                            <input type="text" class="form-control" id="lastName" value="Dahn">
+                                            <label for="a_lname">Last Name</label>
+                                            <input type="text" class="form-control" id="a_lname" name="a_lname" value="<?php echo $a_lname ?>">
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <label for="suffix">Suffix</label>
-                                            <input type="text" class="form-control" id="suffix">
+                                            <label for="a_suffix">Suffix</label>
+                                            <input type="text" class="form-control" id="a_suffix" name="a_suffix" value="<?php echo $a_suffix ?>">
                                         </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="email">Email Address</label>
-                                        <input type="email" class="form-control" id="email" value="john.dahn@gmail.com" readonly>
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
-                                            <label for="sex">Sex</label>
-                                            <select class="form-control" id="sex">
-                                                <option>Male</option>
-                                                <option>Female</option>
-                                                <option>Other</option>
+                                            <label for="username">Email Address</label>
+                                            <input type="text" class="form-control" id="username" name="username" value="<?php echo $username?>">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="a_email">Email Address</label>
+                                            <input type="email" class="form-control" id="a_email" name="a_email" value="<?php echo $a_email?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="a_sex">Sex</label>
+                                            <select class="form-control" id="a_sex" name="a_sex">
+                                                <option value="Male" <?= $a_sex == 'Male' ? 'selected' : '' ?>>Male</option>
+                                                <option value="Female" <?= $a_sex == 'Female' ? 'selected' : '' ?>>Female</option>
+                    
                                             </select>
                                         </div>
                                         <div class="form-group col-md-6">
-                                            <label for="birthdate">Birthdate</label>
-                                            <input type="date" class="form-control" id="birthdate" value="2000-09-14">
+                                            <label for="a_birthdate">Birthdate</label>
+                                            <input type="date" class="form-control" id="a_birthdate" name="a_birthdate" value="<?php echo $a_birthdate?>">
                                         </div>
                                     </div>
                                     <button type="submit" class="btn btn-success">Update Information</button>

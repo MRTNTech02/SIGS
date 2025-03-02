@@ -32,7 +32,6 @@
     // Step 1: Handling Add New Student Record (Temporary)
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["save_student"])) {
         $_SESSION["student"] = [
-            "student_number" => $_POST["student_number"],
             "lrn_number" => $_POST["lrn_number"],
             "s_fname" => $_POST["s_fname"],
             "s_mname" => $_POST["s_mname"],
@@ -53,8 +52,8 @@
         if (isset($_SESSION["student"])) {
             try {
                 // Insert student record
-                $stmt = $conn->prepare("INSERT INTO students_tbl (student_number, lrn_number, s_fname, s_mname, s_lname, s_suffix, s_sex, s_birthdate, s_status, s_profile) 
-                VALUES (:student_number, :lrn_number, :s_fname, :s_mname, :s_lname, :s_suffix, :s_sex, :s_birthdate, :s_status, :s_profile)");
+                $stmt = $conn->prepare("INSERT INTO students_tbl (lrn_number, s_fname, s_mname, s_lname, s_suffix, s_sex, s_birthdate, s_status, s_profile) 
+                VALUES (:lrn_number, :s_fname, :s_mname, :s_lname, :s_suffix, :s_sex, :s_birthdate, :s_status, :s_profile)");
                 
                 $stmt->execute($_SESSION["student"]);
                 $student_id = $conn->lastInsertId();
@@ -127,10 +126,6 @@
                                     <div class="form-group col-md-3">
                                         <label for="lrn_number">Learner's Reference Number</label>
                                         <input type="text" class="form-control" id="lrn_number" name="lrn_number" placeholder="LRN" required>
-                                    </div>
-                                    <div class="form-group col-md-3">
-                                        <label for="student_number">ID Number</label>
-                                        <input type="text" class="form-control" id="student_number" name="student_number" placeholder="ID Number" required>
                                     </div>
                                     <div class="form-group col-md-3">
                                         <label for="s_sex">Sex</label>

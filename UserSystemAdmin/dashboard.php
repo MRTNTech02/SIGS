@@ -14,7 +14,7 @@
 
       if($result->rowCount()>0){
         $data = $result->fetch(PDO::FETCH_ASSOC);
-        $admin_name = $data['a_fname'] . ' ' . $data['a_lname'] ;
+        $admin_name = $data['a_fname'] . ' ' . $data['a_lname'] . ' ' . $data['a_suffix'];
         $username = $data['username'];
       }
     }catch(Exception $e){
@@ -119,7 +119,57 @@
                     <div class="col-12 col-sm-4 col-md-4 col-lg-4 mb-3">
                         <div class="box d-flex flex-column p-4 border border-success rounded" style="min-height: 50vh; min-width: 100%;">
                             <div class="text-success text-bold mb-2">Bug Reports</div> 
-                            <span class="h4 text-dark">56</span> 
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="studentsTable">
+                                    <thead align="center">
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Ticket Number</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableBody" align="center">
+                                        <?php
+                                            $sql = "SELECT * FROM bugs_tbl ORDER BY bug_status DESC";
+                                            try
+                                            {
+                                                $result=$conn->prepare($sql);
+                                                $result->execute();
+                                                if($result->rowcount()>0)
+                                                {
+                                                    $i=1;
+                                                    while($row=$result->fetch(PDO::FETCH_ASSOC))
+                                                    {
+                                                        echo "
+                                                            <tr>
+                                                                <td class='text-center'>{$i} </td>
+                                                                <td class='text-center'>{$row["bug_ticket"]}</td>
+                                                                <td class='text-center'>{$row["bug_status"]}</td>
+                                                                <td>
+                                                                    <a href='ViewTicket.php?bug_id={$row["bug_id"]}' class='btn btn-info btn-sm'>
+                                                                        <i class='fas fa-eye'></i>
+                                                                    </a>
+                                                                </td>";
+                                                                ?>
+                                                            </tr>
+                                                        <?php
+                                                        $i++;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    echo "<tr><tdv colspan = '6'> No records found. </td></tr>";
+                                                }
+                                            }
+                                            catch(Exception $e)
+                                            {
+                                                echo "Unexpected error has been occured!" . $e ->getMessage();
+                                            }
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                     <div class="col-12 col-sm-8 col-md-8 col-lg-8 mb-3">

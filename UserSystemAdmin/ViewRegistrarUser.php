@@ -90,7 +90,7 @@
                                             <?php 
                                                 if (empty($user_profile)){
                                                     echo " 
-                                                        <img src='../Assets/img/profile_pictures/userdefaultprofile.png' alt='Huhu' class='avatar  mx-auto d-block'>   
+                                                        <img src='../Assets/img/profile_pictures/userdefaultprofile.jpg' alt='Huhu' class='avatar  mx-auto d-block'>   
                                                     ";
                                                 }else{
                                                     echo " 
@@ -102,17 +102,14 @@
                                     </div>
                                     <div class="col-lg-7">
                                         <div class="row">
-                                            <div class="col-12 mb-3">
-                                                <h5>Full Name: <?php echo $user_fullname ?> </h5>
+                                            <div class="col-12">
+                                                <label>Full Name: <?php echo $user_fullname ?> </label>
                                             </div>
-                                            <div class="col-12 mb-3">
-                                                <h5>ID Number: <?php echo $id_number ?> </h5>
+                                            <div class="col-12">
+                                                <label>ID Number: <?php echo $id_number ?> </label>
                                             </div>
-                                            <div class="col-12 mb-3">
-                                                <h5>Role: <?php echo $role ?> </h5>
-                                            </div>
-                                            <div class="col-12 mb-3">
-                                                <h5>Status: <?php echo $user_status ?> </h5>
+                                            <div class="col-12">
+                                                <label>Role: <?php echo $role ?> </label>
                                             </div>
                                         </div>
                                     </div>
@@ -120,13 +117,6 @@
                             </div>
                             <div class="assigned-subjects">
                                 <h5 class="text-success mb-4">Assigned Sections</h5>
-                                <div class="d-flex justify-content-between mb-3">
-                                    <!-- Search input and button -->
-                                    <a href="AssignSubjectFaculty.php?user_id=<?php echo $user_id?>" class="btn btn-primary">
-                                        <i class="fas fa-plus"></i>
-                                        Assign Subject
-                                    </a>
-                                </div>
                                 <div class="table-responsive">
                                     <table class="table table-striped" id="studentsTable">
                                         <thead align="center">
@@ -136,6 +126,7 @@
                                                 <th>Grade Level</th>
                                                 <th>Strand</th>
                                                 <th>Section</th>
+                                                <th>Progress</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -162,7 +153,8 @@
                                                                     <td class='text-center'>{$row["subject_name"]}</td>
                                                                     <td>{$row["yl_name"]}</td>
                                                                     <td>{$row["strand_nn"]} </td>
-                                                                    <td>{$row["section_name"]} </td>";
+                                                                    <td>{$row["section_name"]} </td>
+                                                                    <td>In Progress (not dynamic yet)</td>";
                                                                     ?>
                                                                     <td class='text-center'>
                                                                         <?php 
@@ -199,14 +191,6 @@
         </div>
     </div>
     <style>
-        .avatar 
-        {
-            margin-top: 10px;
-            vertical-align: middle;
-            width: 225px;
-            height: auto;
-            border-radius: 50%;
-        }
         .table-container { 
             margin-top: 20px; 
             min-width: 100%; 

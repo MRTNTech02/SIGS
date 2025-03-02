@@ -108,7 +108,7 @@
                     <div class="card-body">
                         <form method="post" action="AddUser.php">
                             <input type="hidden" id="user_status" name="user_status" value="Active">
-                            <input type="hidden" id="user_profile" name="user_profile" value="userdefaultprofile.jpg">
+                            <input type="hidden" id="user_profile" name="user_profile" value="userdefaultprofile.png">
                             <div class="form-row">
                                 <div class="form-group col-md-3">
                                     <label for="u_fname">First Name</label>

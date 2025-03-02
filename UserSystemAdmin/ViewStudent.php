@@ -39,7 +39,7 @@
     if (isset($_GET['assignment_id'])) {
         $assignment_id = $_GET['assignment_id'];
 
-        $sql = "SELECT SC.assignment_id, A.student_id, A.lrn_number, A.student_number, A.s_fname, A.s_lname, A.s_mname, 
+        $sql = "SELECT SC.assignment_id, A.student_id, A.lrn_number, A.s_fname, A.s_lname, A.s_mname, 
         A.s_suffix, A.s_status, B.yl_name, C.strand_nn, C.strand_name, D.section_name
         FROM sc_assignments_tbl AS SC 
         INNER JOIN students_tbl AS A ON SC.fk_student_id = A.student_id
@@ -61,14 +61,13 @@
                 $s_mname = $data["s_mname"];
                 $s_lname = $data["s_lname"];
                 $s_suffix = $data["s_suffix"];
-                $student_number = $data["student_number"];
                 $student_fullname = $data["s_fname"] . " " . $data["s_lname"];
-                // $user_profile = $data["user_profile"];
                 $s_status = $data["s_status"];
                 $s_year_level = $data["yl_name"];
                 $s_strand = $data["strand_name"];
                 $s_strand_nn = $data["strand_nn"];
                 $s_section = $data["section_name"];
+                $assignment_id = $data["assignment_id"];
             }
         }catch(Exception $e){
         echo "Error" . $e;
@@ -88,13 +87,15 @@
     $academic_year = isset($_GET['academic_year']) ? $_GET['academic_year'] : $default_academic_year;
 
     $sql = "SELECT stud.s_fname, stud.s_lname, stud.s_suffix, sub.subject_name, teach.u_fname, 
-        teach.u_lname, teach.u_suffix, subs_t.semester, subs_t.academic_year, grade.student_grade 
+        teach.u_lname, teach.u_suffix, subs_t.semester, subs_t.academic_year, subs_t.fk_assignment_id,
+        grade.student_grade 
         FROM subjects_taking_tbl AS subs_t
         LEFT JOIN student_grades_tbl AS grade ON subs_t.s_taking_id = grade.fk_student_subject_id 
         LEFT JOIN subjects_tbl AS sub ON subs_t.fk_subject_id = sub.subject_id
+        LEFT JOIN faculty_assignments_tbl AS FA ON sub.subject_id=FA.fk_subject_id
         LEFT JOIN sc_assignments_tbl AS sc ON subs_t.fk_assignment_id = sc.assignment_id
         LEFT JOIN students_tbl AS stud ON sc.fk_student_id = stud.student_id 
-        LEFT JOIN users_tbl AS teach ON grade.fk_faculty_id = teach.user_id
+        LEFT JOIN users_tbl AS teach ON FA.fk_user_id = teach.user_id
         WHERE stud.student_id = :student_id
         AND subs_t.semester = :semester
         AND subs_t.academic_year = :academic_year
@@ -135,38 +136,25 @@
                                 <div class="row">
                                     <div class="col-sm-3">
                                         <div class="box2" style="margin-top: 10px; margin-bottom: 10px; height:auto; width: 100%">
-                                            <?php 
-                                                if (empty($user_profile)){
-                                                    echo " 
-                                                        <img src='../Assets/img/profile_pictures/userdefaultprofile.jpg' alt='Huhu' class='avatar  mx-auto d-block'>   
-                                                    ";
-                                                }else{
-                                                    echo " 
-                                                        <img src='../Assets/img/profile_pictures/$user_profile' alt='else' class='avatar  mx-auto d-block'>
-                                                    ";
-                                                }
-                                            ?>
+                                            <img src='../Assets/img/profile_pictures/studentdefaultprofile.png' alt='else' class='avatar  mx-auto d-block'>
                                         </div> 
                                     </div>
                                     <div class="col-lg-7">
                                         <div class="row">
-                                            <div class="col-12">
-                                                <label>Full Name: <?php echo $student_fullname ?> </label>
+                                            <div class="col-12 mb-3">
+                                                <h5>Full Name: <?php echo $student_fullname ?> </h5>
                                             </div>
-                                            <div class="col-12">
-                                                <label>LRN: <?php echo $lrn_number ?> </label>
+                                            <div class="col-12 mb-3">
+                                                <h5>LRN: <?php echo $lrn_number ?> </h5>
                                             </div>
-                                            <div class="col-12">
-                                                <label>ID Number: <?php echo $student_number ?> </label>
+                                            <div class="col-12 mb-3">
+                                                <h5>Strand: <?php echo $s_strand . " (" . $s_strand_nn . ")"?> </h5>
                                             </div>
-                                            <div class="col-12">
-                                                <label>Strand: <?php echo $s_strand . " (" . $s_strand_nn . ")"?> </label>
+                                            <div class="col-12 mb-3">
+                                                <h5>Grade Level: <?php echo $s_year_level ?> </h5>
                                             </div>
-                                            <div class="col-12">
-                                                <label>Grade Level: <?php echo $s_year_level ?> </label>
-                                            </div>
-                                            <div class="col-12">
-                                                <label>Section: <?php echo $s_section ?> </label>
+                                            <div class="col-12 mb-3">
+                                                <h5>Section: <?php echo $s_section ?> </h5>
                                             </div>
                                         </div>
                                     </div>
@@ -177,19 +165,31 @@
                                 <form method="GET">
                                     <input type="hidden" id="assignment_id" name="assignment_id" value="<?php echo $assignment_id; ?>">
                                     <input type="hidden" id="student_id" name="student_id" value="<?php echo $student_id; ?>">
-                                    <label for="semester">Select Semester:</label>
-                                    <select name="semester" id="semester">
-                                        <option value="1" <?php if ($semester == "1") echo "selected"; ?>>1st Semester</option>
-                                        <option value="2" <?php if ($semester == "2") echo "selected"; ?>>2nd Semester</option>
-                                    </select>
-
-                                    <label for="academic_year">Select Academic Year:</label>
-                                    <select name="academic_year" id="academic_year">
-                                        <option value="2023-2024" <?php if ($academic_year == "2023-2024") echo "selected"; ?>>2023-2024</option>
-                                        <option value="2024-2025" <?php if ($academic_year == "2024-2025") echo "selected"; ?>>2024-2025</option>
-                                    </select>
-
-                                    <button type="submit">Filter</button>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <label for="semester">Select Semester:</label>
+                                            <select name="semester" id="semester" class="form-control">
+                                                <option value="1" <?php if ($semester == "1") echo "selected"; ?>>1st Semester</option>
+                                                <option value="2" <?php if ($semester == "2") echo "selected"; ?>>2nd Semester</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="academic_year">Select Academic Year:</label>
+                                            <select name="academic_year" id="academic_year" class="form-control">
+                                                <option value="2023-2024" <?php if ($academic_year == "2023-2024") echo "selected"; ?>>2023-2024</option>
+                                                <option value="2024-2025" <?php if ($academic_year == "2024-2025") echo "selected"; ?>>2024-2025</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <button type="submit" class="btn btn-success">Filter</button>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <a href="AssignSubjectStudent.php?assignment_id=<?php echo $assignment_id ?>" class="btn btn-primary">
+                                                <i class="fas fa-plus"></i>
+                                                Assign a Subject
+                                            </a>
+                                        </div>
+                                    </div>
                                 </form>
                                 <div class="table-responsive">
                                     <table class="table table-striped" id="studentsTable">
@@ -210,7 +210,7 @@
                                                     <tr>
                                                         <td class='text-center'><?php echo $i; ?> </td>
                                                         <td><?php echo $row['subject_name']; ?></td>
-                                                        <td><?php echo $row['u_fname'] . ' ' . $row['u_lname']; ?></td>
+                                                        <td><?php echo $row['u_fname'] . ' ' . $row['u_lname']. ' ' .$row['u_suffix']; ?></td>
                                                         <td><?php echo $row['academic_year']; ?></td>
                                                         <td><?php echo $row['semester']; ?></td>
                                                         <td><?php echo ($row['student_grade'] !== null) ? $row['student_grade'] : 'Pending from Instructor'; ?></td>
@@ -248,6 +248,14 @@
             .d-flex > * {
                 margin-bottom: 5px; 
             }
+        }
+        .avatar 
+        {
+            margin-top: 10px;
+            vertical-align: middle;
+            width: 225px;
+            height: auto;
+            border-radius: 50%;
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

@@ -47,7 +47,15 @@
 
         <!-- Main content -->
         <div class="content p-4 flex-grow-1">
-            <h4 class="text-muted">Bug Reports</h4>
+            <h4 class="text-muted">Academic Management</h4>
+                <!-- Navigation Buttons -->
+                <div class="d-flex justify-content-start mb-3">
+                    <a href="academic_management.php" class="btn btn-outline-dark me-2">Strands</a>
+                    <a href="grade_levels.php" class="btn btn-outline-dark me-2">Grade Levels</a>
+                    <a href="sections.php" class="btn btn-outline-dark me-2">Sections</a>
+                    <a href="subjects.php" class="btn btn-outline-dark me-2">Subjects</a>
+                    <a href="e_sigs.php" class="btn btn-success me-2">E-Signatures</a>
+                </div>
             <div class="card table-container">
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-3">
@@ -56,6 +64,10 @@
                             <input type="text" class="form-control form-control-sm me-1" id="searchInput" placeholder="Search Name">
                             <button class="btn btn-success" id="searchButton">Search</button>
                         </div>
+                        <a href="AddSignature.php" class="btn btn-primary">
+                            <i class="fas fa-plus"></i>
+                            Upload E-signature
+                        </a>
                     </div>
 
                     <!-- Table -->
@@ -64,19 +76,19 @@
                             <thead align="center">
                                 <tr>
                                     <th>No.</th>
-                                    <th>Ticket Number</th>
-                                    <th>Short Description</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
+                                    <th>Name</th>
+                                    <th>Role</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="tableBody" align="center">
                                 <?php
-                                    $sql = "SELECT * FROM bugs_tbl ORDER BY bug_status DESC";
+                                    $sql = "SELECT * FROM e_sigs_tbl";
                                     try
                                     {
                                         $result=$conn->prepare($sql);
                                         $result->execute();
+                                        // $status = $_SESSION['status'];
                                         if($result->rowcount()>0)
                                         {
                                             $i=1;
@@ -85,12 +97,21 @@
                                                 echo "
                                                     <tr>
                                                         <td class='text-center'>{$i} </td>
-                                                        <td class='text-center'>{$row["bug_ticket"]}</td>
-                                                        <td class='text-center'>{$row["short_desc"]}</td>
-                                                        <td class='text-center'>{$row["bug_status"]}</td>
-                                                        <td>
-                                                            <a href='ViewTicket.php?bug_id={$row["bug_id"]}' class='btn btn-info btn-sm'>
-                                                                <i class='fas fa-eye'></i>
+                                                        <td class='text-center'>{$row["owner_name"]}</td>
+                                                        <td class='text-center'>{$row["owner_role"]}</td>
+                                                        <td>";
+                                                        ?>
+                                                            <a href="../Assets/img/signatures/<?php echo $row['owner_signature']; ?>" 
+                                                                class="btn btn-info btn-sm" 
+                                                                download="<?php echo $row['owner_name']; ?>_e_signature.png">
+                                                                <i class="fas fa-download"></i>
+                                                            </a>
+                                                        <?php echo "
+                                                            <a href='EditSignature.php?signature_id={$row["signature_id"]}' class='btn btn-warning btn-sm'>
+                                                                <i class='fas fa-pencil'></i>
+                                                            </a>
+                                                            <a href='' class='btn btn-danger btn-sm delete-btn' data-id='{$row["signature_id"]}'>
+                                                                <i class='fas fa-trash'></i>
                                                             </a>
                                                         </td>";
                                                         ?>
@@ -134,6 +155,50 @@
             </div>
         </div>
     </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this record? 
+                    <p class="text-danger"><strong>Warning:</strong> This action is permanent and cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a href="#" id="confirmDeleteBtn" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const deleteButtons = document.querySelectorAll(".delete-btn");
+            const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+
+            deleteButtons.forEach(button => {
+                button.addEventListener("click", function(event) {
+                    event.preventDefault();
+                    const signatureId = this.getAttribute("data-id"); // Get the data-id attribute
+                    if (signatureId) {
+                        const deleteUrl = `deleteSignature.php?id=${signatureId}`;
+                        confirmDeleteBtn.setAttribute("href", deleteUrl);
+                        const deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"));
+                        deleteModal.show();
+                    } else {
+                        console.error("Error: signature_id is undefined");
+                    }
+                });
+            });
+        });
+
+
+    </script>
 
     <!-- Bootstrap JS -->
     <script src="../Bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -204,20 +269,6 @@
         }
         .table-responsive {
             height: 375px;
-        }
-        .label-completed {
-            background-color: #b2dba1; 
-            color: #3b7a00;           
-        }
-
-        .label-ongoing {
-            background-color: #add8e6;  
-            color: #004080;            
-        }
-
-        .label-pending {
-            background-color: #ffcc99; 
-            color: #cc5200;          
         }
         .content { transition: margin-left 0.3s ease; }
         @media (max-width: 992px) { .content { margin-left: 0; } }

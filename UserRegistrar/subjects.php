@@ -54,6 +54,7 @@
                     <a href="grade_levels.php" class="btn btn-outline-dark me-2">Grade Levels</a>
                     <a href="sections.php" class="btn btn-outline-dark me-2">Sections</a>
                     <a href="subjects.php" class="btn btn-success me-2">Subjects</a>
+                    <a href="e_sigs.php" class="btn btn-outline-dark me-2">E-Signatures</a>
                 </div>
             <div class="card table-container">
                 <div class="card-body">
@@ -97,9 +98,6 @@
                                                         <td class='text-center'>{$i} </td>
                                                         <td class='text-center'>{$row["subject_name"]}</td>
                                                         <td>
-                                                            <a href='ViewSubject.php?subject_id={$row["subject_id"]}' class='btn btn-info btn-sm'>
-                                                                <i class='fas fa-eye'></i>
-                                                            </a>
                                                             <a href='EditSubject.php?subject_id={$row["subject_id"]}' class='btn btn-warning btn-sm'>
                                                                 <i class='fas fa-pencil'></i>
                                                             </a>

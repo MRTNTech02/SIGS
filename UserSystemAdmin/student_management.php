@@ -26,6 +26,15 @@
     unset($_SESSION['username']);
     header("location: index.php");
     }
+
+    if (isset($_POST['toggleStatus'])) {
+        $student_id = $_POST['student_id'];
+        $new_status = $_POST['new_status'];
+        $update_sql = "UPDATE students_tbl SET s_status = :new_status WHERE student_id = :student_id";
+        $stmt = $conn->prepare($update_sql);
+        $stmt->execute(['new_status' => $new_status, 'student_id' => $student_id]);
+        header("Location: student_management.php");
+    }
 ?>
 
 <!DOCTYPE html>
@@ -79,7 +88,7 @@
                             </thead>
                             <tbody id="tableBody" align="center">
                                 <?php
-                                    $sql = "SELECT SC.assignment_id, A.lrn_number, A.s_fname, A.s_lname, A.s_suffix, A.s_status,
+                                    $sql = "SELECT SC.assignment_id, A.student_id, A.s_status, A.lrn_number, A.s_fname, A.s_lname, A.s_suffix, A.s_status,
                                     B.yl_name, C.strand_nn, D.section_name
                                     FROM sc_assignments_tbl  AS SC INNER JOIN
                                     students_tbl AS A on SC.fk_student_id=A.student_id
@@ -112,12 +121,12 @@
                                                                 <a href='ViewStudent.php?assignment_id={$row["assignment_id"]}' class='btn btn-info btn-sm'>
                                                                     <i class='fas fa-eye'></i>
                                                                 </a>
-                                                                <a href='EditStudent.php?assignment_id={$row["assignment_id"]}' class='btn btn-warning btn-sm'>
+                                                                <a href='EditStudent.php?student_id={$row["student_id"]}' class='btn btn-warning btn-sm'>
                                                                     <i class='fas fa-pencil'></i>
                                                                 </a>
-                                                                <a href='' class='btn btn-danger btn-sm'>
-                                                                    <i class='fas fa-trash'></i>
-                                                                </a>
+                                                                <button class='btn " . ($row["s_status"] == 'Active' ? "btn-danger" : "btn-success") . " btn-sm toggle-status' data-user-id='{$row["student_id"]}' data-new-status='" . ($row["s_status"] == 'Active' ? "Inactive" : "Active") . "'>
+                                                                    <i class='fas " . ($row["s_status"] == 'Active' ? "fa-toggle-off" : "fa-toggle-on") . "'></i>
+                                                                </button>
                                                             "; 
                                                             ?>
                                                         </td>
@@ -222,6 +231,41 @@
 
         renderTable(); // Initial render
       });
+    </script>
+
+
+    <script>
+        document.querySelectorAll('.toggle-status').forEach(button => {
+            button.addEventListener('click', function() {
+                const userId = this.getAttribute('data-user-id');
+                const newStatus = this.getAttribute('data-new-status');
+                if (confirm(`Are you sure you want to set this user to ${newStatus}?`)) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '';
+                    
+                    const inputUserId = document.createElement('input');
+                    inputUserId.type = 'hidden';
+                    inputUserId.name = 'student_id';
+                    inputUserId.value = userId;
+                    form.appendChild(inputUserId);
+                    
+                    const inputNewStatus = document.createElement('input');
+                    inputNewStatus.type = 'hidden';
+                    inputNewStatus.name = 'new_status';
+                    inputNewStatus.value = newStatus;
+                    form.appendChild(inputNewStatus);
+                    
+                    const inputToggle = document.createElement('input');
+                    inputToggle.type = 'hidden';
+                    inputToggle.name = 'toggleStatus';
+                    form.appendChild(inputToggle);
+                    
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        });
     </script>
 
     <style>

@@ -42,7 +42,7 @@
                     </li>
                     
                     <li class="nav-item">
-                        <a href="#" class="nav-link text-dark" data-menu="bug">
+                        <a href="reportBug.php" class="nav-link text-dark" data-menu="bug">
                             <i class="fas fa-bug"></i> <span>Report a Bug</span>
                         </a>
                     </li>
