@@ -35,6 +35,24 @@
         exit();
 }
 ?>
+<?php
+    try {
+        $sql = "SELECT SC.assignment_id, A.lrn_number, A.s_fname, A.s_lname, A.s_suffix, A.s_status,
+                B.yl_name, C.strand_nn, C.strand_id, D.section_name, D.section_id
+                FROM sc_assignments_tbl AS SC
+                INNER JOIN students_tbl AS A ON SC.fk_student_id = A.student_id
+                INNER JOIN year_levels_tbl AS B ON SC.fk_year_id = B.year_level_id
+                INNER JOIN strands_tbl AS C ON SC.fk_strand_id = C.strand_id
+                INNER JOIN sections_tbl AS D ON SC.fk_section_id = D.section_id
+                GROUP BY D.section_id"; // Group by section to avoid duplicates
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $sections = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        die("Connection failed: " . $e->getMessage());
+    }
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -60,77 +78,29 @@
                     <div class="box d-flex flex-column p-4 border border-success rounded" style="min-height: 150px; min-width: 100%;">
                     <div class="text-success mb-3">Assigned Sections</div>
                     <div class="row">
-                        <div class="col-3 mb-3">
-                            <div class="border rounded p-4 text-center">
-                                <p class="m-0 fw-bold">
-                                <?php
-                                    $sql = "SELECT 
-                                    subjects_tbl.subject_id, 
-                                    subjects_tbl.subject_name, 
-                                    strands_tbl.strand_nn, 
-                                    year_levels_tbl.yl_name, 
-                                    sections_tbl.section_name, 
-                                    subjects_tbl.subject_status 
-                                    FROM subjects_tbl
-                                    INNER JOIN strands_tbl ON strands_tbl.strand_id = subjects_tbl.subject_id
-                                    INNER JOIN year_levels_tbl ON year_levels_tbl.year_level_id = subjects_tbl.subject_id
-                                    INNER JOIN sections_tbl ON sections_tbl.section_id = subjects_tbl.subject_id";
-                                    try
-                                    {
-                                        $result=$conn->prepare($sql);
-                                        $result->execute();
-                                        // $status = $_SESSION['status'];
-                                        if($result->rowcount()>0)
-                                        {
-                                            $i=1;
-                                            while($row=$result->fetch(PDO::FETCH_ASSOC))
-                                            {
-                                                echo "
-                                                    <tr>
-                                                        <td>{$row["yl_name"]} {$row["strand_nn"]} <br>{$row["section_name"]}</td>
-                                                        ";
-                                                        ?>
-                                                    </tr>
-                                                <?php
-                                                $i++;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            echo "<tr><tdv colspan = '6'> No records found. </td></tr>";
-                                        }
-                                    }
-                                    catch(Exception $e)
-                                    {
-                                        echo "Unexpected error has been occured!" . $e ->getMessage();
-                                    }
-                                ?>
-                                </p>
-                                <a href="students.php" class="text-success">View</a>
-                            </div>
-                        </div>
-                        <div class="col-3 mb-3">
-                            <div class="border rounded p-4 text-center">
-                                <p class="m-0 fw-bold">Section Name</p>
-                                <a href="#" class="text-success">View</a>
-                            </div>
-                        </div>
-                        <div class="col-3">
-                            <div class="border rounded p-4 text-center">
-                                <p class="m-0 fw-bold">Section Name</p>
-                                <a href="#" class="text-success">View</a>
-                            </div>
-                        </div>
-                        <div class="col-3">
-                            <div class="border rounded p-4 text-center">
-                                <p class="m-0 fw-bold">Section Name</p>
-                                <a href="#" class="text-success">View</a>
-                            </div>
-                        </div>
+                    <?php
+                    if (!empty($sections)) {
+                        foreach ($sections as $section) {
+                            echo "<div class='col-md-3 mb-3'>
+                                    <div class='card-custom border'>
+                                    <div class='border rounded p-4 text-center'>
+                                        <h5 class='fw-bold'>{$section["yl_name"]} {$section["strand_nn"]}</h5>
+                                        <p>{$section["section_name"]}</p>
+                                        <a href='students.php?section_id={$section["section_id"]}' class='text-success'>View</a>
+                                    </div>
+                                    </div>
+                                </div>";
+                        }
+                    } else {
+                        echo "<p class='text-center'>No sections found.</p>";
+                    }
+                    ?>
                     </div>
-                    </div>
+                </div>
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

@@ -35,7 +35,60 @@
         exit();
 }
 ?>
+<?php
+try {
+    $section_id = isset($_GET['section_id']) ? $_GET['section_id'] : null;
+    $yl_name = isset($_GET['yl_name']) ? $_GET['yl_name'] : null;
+    $strand_nn = isset($_GET['strand_nn']) ? $_GET['strand_nn'] : null;
+    
+    $section_name = null;
 
+    if ($section_id) {
+        $sql_section = "SELECT B.yl_name, C.strand_nn, D.section_name
+                        FROM sections_tbl AS D
+                        INNER JOIN year_levels_tbl AS B ON D.fk_year_id = B.year_level_id
+                        INNER JOIN strands_tbl AS C ON D.fk_strand_id = C.strand_id
+                        WHERE D.section_id = :section_id";
+
+        $stmt_section = $conn->prepare($sql_section);
+        $stmt_section->bindParam(':section_id', $section_id, PDO::PARAM_INT);
+        $stmt_section->execute();
+        $section = $stmt_section->fetch(PDO::FETCH_ASSOC);
+
+        if ($section) {
+            $yl_name = $section['yl_name'];
+            $strand_nn = $section['strand_nn'];
+            $section_name = $section['section_name'];
+        }
+    }
+
+    $students = [];
+
+    if ($yl_name && $strand_nn && $section_name) {
+        $sql = "SELECT SC.assignment_id, A.lrn_number, A.s_fname, A.s_lname, A.s_suffix, A.s_status,
+                    B.yl_name, C.strand_nn, D.section_name
+                FROM sc_assignments_tbl AS SC
+                INNER JOIN students_tbl AS A ON SC.fk_student_id = A.student_id
+                INNER JOIN year_levels_tbl AS B ON SC.fk_year_id = B.year_level_id
+                INNER JOIN strands_tbl AS C ON SC.fk_strand_id = C.strand_id
+                INNER JOIN sections_tbl AS D ON SC.fk_section_id = D.section_id
+                WHERE B.yl_name = :yl_name AND C.strand_nn = :strand_nn AND D.section_name = :section_name";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':yl_name', $yl_name, PDO::PARAM_STR);
+        $stmt->bindParam(':strand_nn', $strand_nn, PDO::PARAM_STR);
+        $stmt->bindParam(':section_name', $section_name, PDO::PARAM_STR);
+
+        if (!$stmt->execute()) {
+            print_r($stmt->errorInfo()); // Show errors if query fails
+        }
+
+        $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+} catch (Exception $e) {
+    die("Connection failed: " . $e->getMessage());
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -61,50 +114,7 @@
                     href="gradeSection.php">Year & Section 
                 </a>
                 <i class="fa fa-angle-right"></i>
-            <?php
-                $sql = "SELECT 
-                subjects_tbl.subject_id, 
-                subjects_tbl.subject_name, 
-                strands_tbl.strand_nn, 
-                year_levels_tbl.yl_name, 
-                sections_tbl.section_name, 
-                subjects_tbl.subject_status 
-                FROM subjects_tbl
-                INNER JOIN strands_tbl ON strands_tbl.strand_id = subjects_tbl.subject_id
-                INNER JOIN year_levels_tbl ON year_levels_tbl.year_level_id = subjects_tbl.subject_id
-                INNER JOIN sections_tbl ON sections_tbl.section_id = subjects_tbl.subject_id";
-                try
-                {
-                    $result=$conn->prepare($sql);
-                    $result->execute();
-                    // $status = $_SESSION['status'];
-                    if($result->rowcount()>0)
-                    {
-                        $i=1;
-                        while($row=$result->fetch(PDO::FETCH_ASSOC))
-                        {
-                            echo "
-                                <tr>
-                                    <td>{$row["yl_name"]}</td>
-                                    <td>{$row["strand_nn"]}</td>
-                                    <td>{$row["section_name"]}</td>
-                                    ";
-                                    ?>
-                                </tr>
-                            <?php
-                            $i++;
-                        }
-                    }
-                    else
-                    {
-                        echo "<tr><tdv colspan = '6'> No records found. </td></tr>";
-                    }
-                }
-                catch(Exception $e)
-                {
-                    echo "Unexpected error has been occured!" . $e ->getMessage();
-                }
-            ?>
+                <?php echo($yl_name . ' ' . $strand_nn . ' ' . $section_name ); ?>
             </h4>
                 <a href="gradeSection.php" class="link-offset-2 link-underline link-underline-opacity-0">
                     <button type="button" class="btn btn-warning d-flex justify-content-center align-items-center text-center p-1">
@@ -121,18 +131,8 @@
                             <input type="text" class="form-control form-control-sm me-1" id="searchInput" placeholder="Search Name">
                             <button class="btn btn-success" id="searchButton">Search</button>
                         </div>
-                        <!-- <button type="button" class="btn border-black dropdown-toggle" 
-                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-filter"></i> Filter by 
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-end">
-                            <button class="dropdown-item filter-btn" data-filter="Strand">Strand</button>
-                            <button class="dropdown-item filter-btn" data-filter="Grade Level">Grade Level</button>
-                            <button class="dropdown-item filter-btn" data-filter="Section">Section</button>
-                        </div> -->
                         <a href="AddStudent.php" class="btn btn-primary">
-                            <i class="fas fa-plus"></i>
-                            Add New Student
+                            <i class="fas fa-plus"></i> Add New Student
                         </a>
                     </div>
 
@@ -144,69 +144,29 @@
                                     <th>No.</th>
                                     <th>LRN</th>
                                     <th>Name</th>
-                                    <!-- <th>Strand</th>
-                                    <th>Grade Level</th>
-                                    <th>Section</th> -->
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="tableBody" align="center">
-                                <?php
-                                    $sql = "SELECT SC.assignment_id, A.lrn_number, A.s_fname, A.s_lname, A.s_suffix, A.s_status,
-                                    B.yl_name, C.strand_nn, D.section_name
-                                    FROM sc_assignments_tbl  AS SC INNER JOIN
-                                    students_tbl AS A on SC.fk_student_id=A.student_id
-                                    INNER JOIN year_levels_tbl AS B ON SC.fk_year_id=B.year_level_id
-                                    INNER JOIN strands_tbl AS C ON SC.fk_strand_id=C.strand_id
-                                    INNER JOIN sections_tbl AS D ON SC.fk_section_id=section_id";
-                                    try
-                                    {
-                                        $result=$conn->prepare($sql);
-                                        // $strandFilter = "STEM";  // Set the filter value
-                                        // $result->bindParam(':strand', $strandFilter, PDO::PARAM_STR);
-                                        $result->execute();
-                                        // $status = $_SESSION['status'];
-                                        if($result->rowcount()>0)
-                                        {
-                                            $i=1;
-                                            while($row=$result->fetch(PDO::FETCH_ASSOC))
-                                            {
-                                                echo "
-                                                    <tr>
-                                                        <td class='text-center'>{$i} </td>
-                                                        <td class='text-center'>{$row["lrn_number"]}</td>
-                                                        <td align='left'>{$row["s_lname"]}, {$row["s_fname"]} {$row["s_suffix"]}</td>
-                                                        ";
-                                                        ?>
-                                                        <td class='text-center'>
-                                                            <?php 
-                                                            echo "
-                                                                <a href='ViewUser.php?assignment_id={$row["assignment_id"]}' class='btn btn-info btn-sm'>
-                                                                    <i class='fas fa-eye'></i>
-                                                                </a>
-                                                                <a href='EditUser.php?assignment_id={$row["assignment_id"]}' class='btn btn-warning btn-sm'>
-                                                                    <i class='fas fa-pencil'></i>
-                                                                </a>
-                                                                <a href='' class='btn btn-danger btn-sm'>
-                                                                    <i class='fas fa-trash'></i>
-                                                                </a>
-                                                            "; 
-                                                            ?>
-                                                        </td>
-                                                    </tr>
-                                                <?php
-                                                $i++;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            echo "<tr><tdv colspan = '6'> No records found. </td></tr>";
-                                        }
+                            <?php
+                                if (!empty($students)) {
+                                    $i = 1;
+                                    foreach ($students as $row) {
+                                        echo "<tr>
+                                                <td>{$i}</td>
+                                                <td>{$row["lrn_number"]}</td>
+                                                <td>{$row["s_lname"]}, {$row["s_fname"]} {$row["s_suffix"]}</td>
+                                                <td>
+                                                    <a href='ViewUser.php?assignment_id={$row["assignment_id"]}' class='btn btn-info btn-sm'><i class='fas fa-eye'></i></a>
+                                                    <a href='EditUser.php?assignment_id={$row["assignment_id"]}' class='btn btn-warning btn-sm'><i class='fas fa-pencil'></i></a>
+                                                    <a href='#' class='btn btn-danger btn-sm'><i class='fas fa-trash'></i></a>
+                                                </td>
+                                            </tr>";
+                                        $i++;
                                     }
-                                    catch(Exception $e)
-                                    {
-                                        echo "Unexpected error has been occured!" . $e ->getMessage();
-                                    }
+                                } else {
+                                    echo "<tr><td colspan='4' class='text-center'>No students found.</td></tr>";
+                                }
                                 ?>
                             </tbody>
                         </table>
@@ -281,7 +241,7 @@
 
         function filterTable() {
           const filter = searchInput.value.toLowerCase();
-          filteredRows = rows.filter(row => row.cells[1].textContent.toLowerCase().includes(filter));
+          filteredRows = rows.filter(row => row.cells[2].textContent.toLowerCase().includes(filter));
           currentPage = 1;
           renderTable();
         }
@@ -320,5 +280,8 @@
         .label-registrar { background-color: #ffcc99; color: #cc5200; }
         
     </style>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
