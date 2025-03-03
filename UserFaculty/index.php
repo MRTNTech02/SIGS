@@ -15,7 +15,7 @@
     }
 
     if (empty($errors)){
-        $sql = "SELECT * FROM users_tbl WHERE id_number = :id_number AND user_password = :user_password";
+        $sql = "SELECT * FROM users_tbl WHERE id_number = :id_number AND user_password = :user_password and role='Faculty'";
         $result = $conn->prepare($sql);
         #bindParam() for security
         $result->bindParam(':id_number', $id_number);
@@ -26,6 +26,19 @@
             $data = $result->fetch(PDO::FETCH_ASSOC);
             $_SESSION['id_number'] = $data['id_number'];
             $_SESSION['user_id'] = $data['user_id'];  
+            $_SESSION['user_password'] = $data['user_password'];  
+
+            // Define user_id before using it
+            $user_id = $data['user_id'];
+
+            try {
+            // Log login event for admins
+            $log_stmt = $conn->prepare("INSERT INTO user_logs_tbl (fk_user_id, role, action) VALUES (:user_id, 'Faculty', 'Login')");
+            $log_stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            $log_stmt->execute();
+            } catch (PDOException $e) {
+            die("Error in executing statement: " . $e->getMessage());
+            }
 
             header("location: homepage.php");
         } else {

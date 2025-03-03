@@ -65,7 +65,7 @@ try {
 </head>
 <body>
     <?php
-        include '../Assets/components/Navbar.php';
+        include '../Assets/components/FacultyNavbar.php';
     ?>
     <div class="d-flex">
         <?php
