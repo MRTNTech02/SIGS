@@ -36,12 +36,6 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link text-dark" data-menu="grades">
-                            <i class="fas fa-file-text"></i> <span>Grade Submission</span>
-                        </a>
-                    </li>
-                    
-                    <li class="nav-item">
                         <a href="reportBug.php" class="nav-link text-dark" data-menu="bug">
                             <i class="fas fa-bug"></i> <span>Report a Bug</span>
                         </a>

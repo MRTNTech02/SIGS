@@ -32,7 +32,6 @@
     // Step 1: Handling Add New Student Record (Temporary)
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["save_student"])) {
         $_SESSION["student"] = [
-            "student_number" => $_POST["student_number"],
             "lrn_number" => $_POST["lrn_number"],
             "s_fname" => $_POST["s_fname"],
             "s_mname" => $_POST["s_mname"],
@@ -53,8 +52,8 @@
         if (isset($_SESSION["student"])) {
             try {
                 // Insert student record
-                $stmt = $conn->prepare("INSERT INTO students_tbl (student_number, lrn_number, s_fname, s_mname, s_lname, s_suffix, s_sex, s_birthdate, s_status, s_profile) 
-                VALUES (:student_number, :lrn_number, :s_fname, :s_mname, :s_lname, :s_suffix, :s_sex, :s_birthdate, :s_status, :s_profile)");
+                $stmt = $conn->prepare("INSERT INTO students_tbl (lrn_number, s_fname, s_mname, s_lname, s_suffix, s_sex, s_birthdate, s_status, s_profile) 
+                VALUES (:lrn_number, :s_fname, :s_mname, :s_lname, :s_suffix, :s_sex, :s_birthdate, :s_status, :s_profile)");
                 
                 $stmt->execute($_SESSION["student"]);
                 $student_id = $conn->lastInsertId();
@@ -124,15 +123,11 @@
                                     </div>
                                 </div>
                                 <div class="form-row">
-                                    <div class="form-group col-md-3">
+                                    <div class="form-group col-md-4">
                                         <label for="lrn_number">Learner's Reference Number</label>
                                         <input type="text" class="form-control" id="lrn_number" name="lrn_number" placeholder="LRN" required>
                                     </div>
-                                    <div class="form-group col-md-3">
-                                        <label for="student_number">ID Number</label>
-                                        <input type="text" class="form-control" id="student_number" name="student_number" placeholder="ID Number" required>
-                                    </div>
-                                    <div class="form-group col-md-3">
+                                    <div class="form-group col-md-4">
                                         <label for="s_sex">Sex</label>
                                         <select id="s_sex" name="s_sex" class="form-control" required>
                                             <option value="" disabled selected>Select Sex</option>
@@ -141,13 +136,13 @@
                                             <option value="Other">Other</option>
                                         </select>
                                     </div>
-                                    <div class="form-group col-md-3">
+                                    <div class="form-group col-md-4">
                                         <label for="s_birthdate">Birthdate</label>
                                         <input type="date" class="form-control" id="s_birthdate" name="s_birthdate" required>
                                     </div>
                                 </div>
                                 <button type="submit" name="save_student" class="btn btn-success">Next</button>
-                                <button type="submit" name="cancel" class="btn btn-secondary">Cancel</button>
+                                <a href="student_management.php" class="btn btn-secondary"> Cancel </a>
                                 <!-- <button type="submit" name="register" id="register" class="btn btn-success">Add Student Record</button> -->
                                 <!-- <a href="student_management.php" class="btn btn-secondary"> Cancel </a> -->
                             </form>

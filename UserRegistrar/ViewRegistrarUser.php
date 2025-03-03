@@ -16,7 +16,6 @@
         $data = $result->fetch(PDO::FETCH_ASSOC);
         $registrar_name = $data['u_fname'] . ' ' . $data['u_lname'] . ' ' . $data['u_suffix'] ;
         $id_number = $data['id_number'];
-        $user_profile = $data['user_profile'];
       }
     }catch(Exception $e){
       echo "Error" . $e;
@@ -117,80 +116,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="assigned-subjects">
-                                <h5 class="text-success mb-4">Assigned Sections</h5>
-                                <div class="d-flex justify-content-between mb-3">
-                                    <!-- Search input and button -->
-                                    <a href="AssignSubjectFaculty.php?user_id=<?php echo $user_id?>" class="btn btn-primary">
-                                        <i class="fas fa-plus"></i>
-                                        Assign Subject
-                                    </a>
-                                </div>
-                                <div class="table-responsive">
-                                    <table class="table table-striped" id="studentsTable">
-                                        <thead align="center">
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Subject</th>
-                                                <th>Grade Level</th>
-                                                <th>Strand</th>
-                                                <th>Section</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tableBody" align="center">
-                                            <?php
-                                                $sql = "SELECT FA.f_assignment_id, A.subject_name, B.yl_name, C.strand_nn, D.section_name FROM
-                                                faculty_assignments_tbl AS FA INNER JOIN subjects_tbl AS A ON FA.fk_subject_id=A.subject_id
-                                                INNER JOIN year_levels_tbl AS B ON FA.fk_year_id=B.year_level_id 
-                                                INNER JOIN strands_tbl AS C ON FA.fk_strand_id=C.strand_id 
-                                                INNER JOIN sections_tbl AS D ON FA.fk_section_id=section_id 
-                                                INNER JOIN users_tbl As E ON FA.fk_user_id=E.user_id WHERE FA.fk_user_id='$user_id'";
-                                                try
-                                                {
-                                                    $result=$conn->prepare($sql);
-                                                    $result->execute();
-                                                    if($result->rowcount()>0)
-                                                    {
-                                                        $i=1;
-                                                        while($row=$result->fetch(PDO::FETCH_ASSOC))
-                                                        {
-                                                            echo "
-                                                                <tr>
-                                                                    <td class='text-center'>{$i} </td>
-                                                                    <td class='text-center'>{$row["subject_name"]}</td>
-                                                                    <td>{$row["yl_name"]}</td>
-                                                                    <td>{$row["strand_nn"]} </td>
-                                                                    <td>{$row["section_name"]} </td>";
-                                                                    ?>
-                                                                    <td class='text-center'>
-                                                                        <?php 
-                                                                        echo "
-                                                                            <a href='ViewAssignedSubject.php?f_assignment_id={$row["f_assignment_id"]}' class='btn btn-info btn-sm'>
-                                                                                <i class='fas fa-eye'></i>
-                                                                            </a>
-                                                                        "; 
-                                                                        ?>
-                                                                    </td>
-                                                                </tr>
-                                                            <?php
-                                                            $i++;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        echo "<tr><tdv colspan = '7'> No records found. </td></tr>";
-                                                    }
-                                                }
-                                                catch(Exception $e)
-                                                {
-                                                    echo "Unexpected error has been occured!" . $e ->getMessage();
-                                                }
-                                            ?>
-                                        </tbody>
-                                    </table>
                                 </div>
                             </div>
                         </div>

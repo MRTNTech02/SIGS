@@ -107,9 +107,6 @@
                                                                 <i class="fas fa-download"></i>
                                                             </a>
                                                         <?php echo "
-                                                            <a href='EditSignature.php?signature_id={$row["signature_id"]}' class='btn btn-warning btn-sm'>
-                                                                <i class='fas fa-pencil'></i>
-                                                            </a>
                                                             <a href='' class='btn btn-danger btn-sm delete-btn' data-id='{$row["signature_id"]}'>
                                                                 <i class='fas fa-trash'></i>
                                                             </a>

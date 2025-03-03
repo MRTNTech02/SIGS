@@ -20,6 +20,8 @@
             $data = $result->fetch(PDO::FETCH_ASSOC);
             $user_name = htmlspecialchars($data['u_fname'] . ' ' . $data['u_lname']);  
             $id_number = htmlspecialchars($data['id_number']);
+            $user_id = htmlspecialchars($data['user_id']);
+            
         }
     } 
     catch(Exception $e) {
