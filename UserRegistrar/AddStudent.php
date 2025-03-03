@@ -153,55 +153,60 @@
                     <h2>Step 2: Assign Student Details</h2>
                     <form method="post">
                         <!-- Strand Dropdown -->
-                        Strand:
-                        <select name="strand" id="strand" required>
-                            <option value="">Select Strand</option>
-                            <?php
-                                $sql = "SELECT strand_id, strand_name, strand_nn FROM strands_tbl";
-                                try {
-                                    $result = $conn->prepare($sql);
-                                    $result->execute();
-                                    if ($result->rowCount() > 0) {
-                                        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                                            echo "<option value='{$row["strand_id"]}'>{$row["strand_name"]} ({$row["strand_nn"]})</option>";
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                Strand:
+                                <select class="form-control" name="strand" id="strand" required>
+                                    <option value="">Select Strand</option>
+                                    <?php
+                                        $sql = "SELECT strand_id, strand_name, strand_nn FROM strands_tbl";
+                                        try {
+                                            $result = $conn->prepare($sql);
+                                            $result->execute();
+                                            if ($result->rowCount() > 0) {
+                                                while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                                                    echo "<option value='{$row["strand_id"]}'>{$row["strand_name"]} ({$row["strand_nn"]})</option>";
+                                                }
+                                            } else {
+                                                echo "<option value=''>No records found.</option>";
+                                            }
+                                        } catch (Exception $e) {
+                                            echo "Unexpected error occurred!" . $e->getMessage();
                                         }
-                                    } else {
-                                        echo "<option value=''>No records found.</option>";
-                                    }
-                                } catch (Exception $e) {
-                                    echo "Unexpected error occurred!" . $e->getMessage();
-                                }
-                            ?>
-                        </select><br>
-
-                        <!-- Year Level Dropdown -->
-                        Year Level:
-                        <select name="year_level" id="year_level" required>
-                            <option value="">Select Year Level</option>
-                            <?php
-                                $sql = "SELECT year_level_id, yl_name FROM year_levels_tbl";
-                                try {
-                                    $result = $conn->prepare($sql);
-                                    $result->execute();
-                                    if ($result->rowCount() > 0) {
-                                        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                                            echo "<option value='{$row["year_level_id"]}'>{$row["yl_name"]}</option>";
+                                    ?>
+                                </select><br>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <!-- Year Level Dropdown -->
+                                Year Level:
+                                <select class="form-control" name="year_level" id="year_level" required>
+                                    <option value="">Select Year Level</option>
+                                    <?php
+                                        $sql = "SELECT year_level_id, yl_name FROM year_levels_tbl";
+                                        try {
+                                            $result = $conn->prepare($sql);
+                                            $result->execute();
+                                            if ($result->rowCount() > 0) {
+                                                while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                                                    echo "<option value='{$row["year_level_id"]}'>{$row["yl_name"]}</option>";
+                                                }
+                                            } else {
+                                                echo "<option value=''>No records found.</option>";
+                                            }
+                                        } catch (Exception $e) {
+                                            echo "Unexpected error occurred!" . $e->getMessage();
                                         }
-                                    } else {
-                                        echo "<option value=''>No records found.</option>";
-                                    }
-                                } catch (Exception $e) {
-                                    echo "Unexpected error occurred!" . $e->getMessage();
-                                }
-                            ?>
-                        </select><br>
-
-                        <!-- Section Dropdown (Filtered Based on Strand & Year Level) -->
-                        Section:
-                        <select name="section" id="section">
-                            <option value="">Select Section</option>
-                        </select><br>
-
+                                    ?>
+                                </select><br>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <!-- Section Dropdown (Filtered Based on Strand & Year Level) -->
+                                Section:
+                                <select class="form-control" name="section" id="section">
+                                    <option value="">Select Section</option>
+                                </select><br>
+                            </div>
+                        </div>
                         <button type="submit" name="assign_student">Submit</button>
                         <button type="submit" name="cancel">Cancel</button>
                     </form>

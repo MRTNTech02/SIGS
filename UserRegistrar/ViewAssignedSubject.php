@@ -1,38 +1,38 @@
 <?php 
-session_start();
-include ("../server_connection/db_connect.php");
+    session_start();
+    include ("../server_connection/db_connect.php");
 
-// Fixing session validation condition
-if (empty($_SESSION["id_number"]) || empty($_SESSION["user_password"])) {
-    header("location: index.php");
-    exit();
-}
-
-if (!empty($_SESSION["id_number"])){
-    $user_id = $_SESSION["user_id"];
-
-    $sql = "SELECT * FROM users_tbl WHERE user_id=:user_id";
-    try {
-        $result = $conn->prepare($sql);
-        $result->execute(['user_id' => $user_id]);
-
-        if($result->rowCount() > 0){
-            $data = $result->fetch(PDO::FETCH_ASSOC);
-            $registrar_name = $data['u_fname'] . ' ' . $data['u_lname'] . ' ' . $data['u_suffix'];
-            $id_number = $data['id_number'];
-            $user_profile = $data['user_profile'];
-        }
-    } catch (Exception $e) {
-        echo "Error: " . $e->getMessage();
+    // Fixing session validation condition
+    if (empty($_SESSION["id_number"]) || empty($_SESSION["user_password"])) {
+        header("location: index.php");
+        exit();
     }
-}
 
-if (isset($_GET['logout'])) {
-    session_destroy();
-    unset($_SESSION['id_number']);
-    header("location: index.php");
-    exit();
-}
+    if (!empty($_SESSION["id_number"])){
+        $user_id = $_SESSION["user_id"];
+
+        $sql = "SELECT * FROM users_tbl WHERE user_id=:user_id";
+        try {
+            $result = $conn->prepare($sql);
+            $result->execute(['user_id' => $user_id]);
+
+            if($result->rowCount() > 0){
+                $data = $result->fetch(PDO::FETCH_ASSOC);
+                $registrar_name = $data['u_fname'] . ' ' . $data['u_lname'] . ' ' . $data['u_suffix'];
+                $id_number = $data['id_number'];
+                $user_profile = $data['user_profile'];
+            }
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+
+    if (isset($_GET['logout'])) {
+        session_destroy();
+        unset($_SESSION['id_number']);
+        header("location: index.php");
+        exit();
+    }
 ?>
 
 <!-- fetching record -->
@@ -56,7 +56,7 @@ if (isset($_GET['logout'])) {
             $yl_name = $data["yl_name"];
             $strand_nn = $data["strand_nn"];
             $section_id = $data["section_id"];
-            $student_id = $data["student_id"];
+            // $student_id = $data["student_id"];
             $subject_id = $data["subject_id"];
         }
         }catch(Exception $e){
@@ -223,9 +223,9 @@ if (isset($_GET['logout'])) {
                                     FROM subjects_taking_tbl AS subs_t
                                     LEFT JOIN student_grades_tbl AS grade ON subs_t.s_taking_id = grade.fk_student_subject_id 
                                     LEFT JOIN subjects_tbl AS sub ON subs_t.fk_subject_id = sub.subject_id
-                                    LEFT JOIN sc_assignments_tbl AS sc ON subs_t.fk_assignment_id = sc.assignment_id
+                                    INNER JOIN sc_assignments_tbl AS sc ON subs_t.fk_assignment_id = sc.assignment_id
                                     LEFT JOIN sections_tbl AS sec ON sc.fk_section_id=sec.section_id
-                                    LEFT JOIN students_tbl AS stud ON sc.fk_student_id = stud.student_id 
+                                    INNER JOIN students_tbl AS stud ON sc.fk_student_id = stud.student_id 
                                     LEFT JOIN users_tbl AS teach ON grade.fk_faculty_id = teach.user_id
                                     WHERE sub.subject_id = $subject_id
                                     AND sec.section_id = $section_id";

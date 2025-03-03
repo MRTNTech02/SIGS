@@ -54,7 +54,7 @@
                             <button class="btn btn-primary btn-sm" id="exportButton">Export</button>
                         </div>
                     </div>
-                    <div class="table-responsive">
+                    <div class="table-responsive" style="height: 70vh; overflow-y: auto;">
                         <table class="table table-striped" id="studentsTable">
                             <thead align="center">
                                 <tr>

@@ -1,35 +1,38 @@
 <?php 
-  session_start();
-  include ("../server_connection/db_connect.php");
-  if (empty($_SESSION["username"]) && empty ($_SESSION["a_password"])) {
-    header("location: index.php");
-    exit();
-  }
-  if (!empty($_SESSION["username"])){
-    $admin_id = $_SESSION["admin_id"];
+    session_start();
+    include ("../server_connection/db_connect.php");
 
-    $sql = "SELECT * FROM admin_tbl WHERE admin_id = :admin_id";
-    try{
-      $stmt = $conn->prepare($sql);
-      $stmt->bindParam(':admin_id', $admin_id, PDO::PARAM_INT);
-      $stmt->execute();
-
-      if($stmt->rowCount() > 0){
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-        $admin_name = $data['a_fname'] . ' ' . $data['a_lname'];
-        $username = $data['username'];
-      }
-    }catch(Exception $e){
-      echo "Error: " . $e->getMessage();
-      exit();
+    // Fixing session validation condition
+    if (empty($_SESSION["id_number"]) || empty($_SESSION["user_password"])) {
+        header("location: index.php");
+        exit();
     }
-  }
-  if (isset($_GET['logout'])) {
-    session_destroy();
-    unset($_SESSION['username']);
-    header("location: index.php");
-    exit();
-  }
+
+    if (!empty($_SESSION["id_number"])){
+        $user_id = $_SESSION["user_id"];
+
+        $sql = "SELECT * FROM users_tbl WHERE user_id=:user_id";
+        try {
+            $result = $conn->prepare($sql);
+            $result->execute(['user_id' => $user_id]);
+
+            if($result->rowCount() > 0){
+                $data = $result->fetch(PDO::FETCH_ASSOC);
+                $registrar_name = $data['u_fname'] . ' ' . $data['u_lname'] . ' ' . $data['u_suffix'];
+                $id_number = $data['id_number'];
+                $user_profile = $data['user_profile'];
+            }
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+
+    if (isset($_GET['logout'])) {
+        session_destroy();
+        unset($_SESSION['id_number']);
+        header("location: index.php");
+        exit();
+    }
 ?>
 
 <?php
@@ -102,11 +105,11 @@
 </head>
 <body>
     <?php
-        include '../Assets/components/Navbar.php';
+        include '../Assets/components/RegistrarNavbar.php';
     ?>
     <div class="d-flex">
         <?php
-            include '../Assets/components/AdminSidebar.php';
+            include '../Assets/components/RegistrarSidebar.php';
         ?>
         <!-- Main content -->
         <div class="content p-4 w-100">

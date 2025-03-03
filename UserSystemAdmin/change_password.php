@@ -2,22 +2,22 @@
     session_start();
     include ("../server_connection/db_connect.php");
 
-    if (!isset($_SESSION["id_number"])) {
+    if (empty($_SESSION["username"]) && empty ($_SESSION["a_password"])) {
         header("location: index.php");
         exit();
     }
 
-    $user_id = $_SESSION["user_id"];
+    $admin_id = $_SESSION["admin_id"];
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $current_password = $_POST['user_password'];
+        $current_password = $_POST['a_password'];
         $new_password = $_POST['new_password'];
         $retype_pass = $_POST['retype_pass'];
 
         // Fetch current password from the database
-        $sql = "SELECT user_password FROM users_tbl WHERE user_id = :user_id";
+        $sql = "SELECT a_password FROM admin_tbl WHERE admin_id = :admin_id";
         $stmt = $conn->prepare($sql);
-        $stmt->execute(['user_id' => $user_id]);
+        $stmt->execute(['admin_id' => $admin_id]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$user) {
@@ -26,7 +26,7 @@
         }
 
         // Verify current password (plain text comparison)
-        if ($current_password !== $user['user_password']) {
+        if ($current_password !== $user['a_password']) {
             echo "<script>alert('Current password is incorrect!'); window.location.href='change_password.php';</script>";
             exit();
         }
@@ -38,14 +38,14 @@
         }
 
         // Update password in the database (saving as plain text)
-        $update_sql = "UPDATE users_tbl SET user_password = :new_password WHERE user_id = :user_id";
+        $update_sql = "UPDATE users_tbl SET a_password = :new_password WHERE admin_id = :admin_id";
         $update_stmt = $conn->prepare($update_sql);
         $update_stmt->execute([
             'new_password' => $new_password,
-            'user_id' => $user_id
+            'admin_id' => $admin_id
         ]);
 
-        echo "<script>alert('Password changed successfully!'); window.location.href='registrar_profile.php';</script>";
+        echo "<script>alert('Password changed successfully!'); window.location.href='user_profile.php';</script>";
         exit();
     }
 ?>
@@ -60,24 +60,24 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <?php include '../Assets/components/RegistrarNavbar.php'; ?>
+    <?php include '../Assets/components/Navbar.php'; ?>
     <div class="d-flex">
-        <?php include '../Assets/components/RegistrarSidebar.php'; ?>
+        <?php include '../Assets/components/AdminSidebar.php'; ?>
         <div class="content p-4">
             <h4 class="text-muted">Change Password</h4>
             <!-- Navigation Buttons -->
             <div class="d-flex justify-content-start mb-3">
-                <a href="registrar_profile.php" class="btn btn-outline-dark me-2">Information</a>
+                <a href="user_profile.php" class="btn btn-outline-dark me-2">Information</a>
                 <a href="change_password.php" class="btn btn-success me-2">Change Password</a>
             </div>
             <div class="card">
                 <div class="card-header">Change Password</div>
                 <div class="card-body">
                     <form action="change_password.php" method="post">
-                        <input type="hidden" name="user_id" value="<?php echo $user_id ?>">
+                        <input type="hidden" name="admin_id" value="<?php echo $admin_id ?>">
                         <div class="form-group">
-                            <label for="user_password">Current Password</label>
-                            <input type="password" class="form-control" name="user_password" id="user_password" required>
+                            <label for="a_password">Current Password</label>
+                            <input type="password" class="form-control" name="a_password" id="a_password" required>
                         </div>
                         <div class="form-group">
                             <label for="new_password">New Password</label>

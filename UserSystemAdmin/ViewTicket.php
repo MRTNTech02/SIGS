@@ -141,24 +141,19 @@
                             <p><?php echo $bug_desc ?></p>
                         </div>
                     </div>
-                    <h6>Resolution Comment:</h6>
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <?php 
-                                if (!empty($comment)){
-                                    echo "
-                                        <p>$comment</p>
-                                    ";
-                                }else{
-                                    echo "
-                                    <button class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#resolveModal'>
-                                        Resolve Issue
-                                    </button>
-                                    ";
-                                }
-                            ?>
-                        </div>
-                    </div>
+                    <?php 
+                        if (!empty($comment)){
+                            echo "
+                                <p>$comment</p>
+                            ";
+                        }else{
+                            echo "
+                            <button class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#resolveModal'>
+                                Resolve Issue
+                            </button>
+                            ";
+                        }
+                    ?>
                 </div>
             </div>
         </div>

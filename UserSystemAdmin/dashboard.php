@@ -175,7 +175,7 @@
                     <div class="col-12 col-sm-8 col-md-8 col-lg-8 mb-3">
                         <div class="box d-flex flex-column p-4 border border-success rounded" style="min-height: 50vh; width: 100%;">
                             <div class="text-success text-bold mb-2">User Logs</div> 
-                            <div class="table-responsive">
+                            <div class="table-responsive" style="height: 40vh; overflow-y: auto;">
                                 <table class="table table-striped" id="studentsTable">
                                     <thead align="center">
                                         <tr>
@@ -189,17 +189,19 @@
                                     <tbody id="tableBody" align="center">
                                         <?php
                                             $sql = "SELECT logs.log_id, 
-                                                COALESCE(
-                                                    CONCAT(users.u_fname, ' ', users.u_lname, ' ', IFNULL(users.u_suffix, '')), 
-                                                    CONCAT(admins.a_fname, ' ', admins.a_lname, ' ', IFNULL(admins.a_suffix, ''))
-                                                ) AS full_name, 
-                                                logs.role, 
-                                                logs.action, 
-                                                logs.log_ts 
-                                            FROM user_logs_tbl as logs
-                                            LEFT JOIN users_tbl as users ON logs.fk_user_id = users.user_id 
-                                            LEFT JOIN admin_tbl as admins ON logs.fk_admin_id = admins.admin_id
-                                            ORDER BY logs.log_id DESC";
+                                            COALESCE(
+                                                CONCAT(users.u_fname, ' ', users.u_lname, ' ', IFNULL(users.u_suffix, '')), 
+                                                CONCAT(admins.a_fname, ' ', admins.a_lname, ' ', IFNULL(admins.a_suffix, ''))
+                                            ) AS full_name, 
+                                            logs.role, 
+                                            logs.action, 
+                                            logs.log_ts 
+                                        FROM user_logs_tbl AS logs
+                                        LEFT JOIN users_tbl AS users ON logs.fk_user_id = users.user_id 
+                                        LEFT JOIN admin_tbl AS admins ON logs.fk_admin_id = admins.admin_id
+                                        WHERE logs.log_ts >= NOW() - INTERVAL 7 DAY
+                                        ORDER BY logs.log_id DESC;
+                                        ";
                                             try
                                             {
                                                 $result=$conn->prepare($sql);

@@ -1,38 +1,41 @@
 <?php 
   session_start();
   include ("../server_connection/db_connect.php");
-  if (empty($_SESSION["id_number"]) && empty ($_SESSION["user_password"])) {
-    header("location: index.php");
+
+  if (!isset($_SESSION["id_number"]) || !isset($_SESSION["user_password"])) {
+      header("location: index.php");
+      exit();
   }
-  if (!empty($_SESSION["id_number"])){
-    $user_id = $_SESSION["user_id"];
 
-    $sql = "SELECT * FROM users_tbl WHERE user_id=$user_id";
-    try{
+  $user_id = $_SESSION["user_id"];
+
+  $sql = "SELECT * FROM users_tbl WHERE user_id=:user_id";
+  try {
       $result = $conn->prepare($sql);
-      $result->execute();
+      $result->execute(['user_id' => $user_id]);
 
-      if($result->rowCount()>0){
-        $data = $result->fetch(PDO::FETCH_ASSOC);
-        $registrar_name = $data['u_fname'] . ' ' . $data['u_lname'] . ' ' . $data['u_suffix'] ;
-        $id_number = $data['id_number'];
+      if ($result->rowCount() > 0) {
+          $data = $result->fetch(PDO::FETCH_ASSOC);
+          $registrar_name = trim("{$data['u_fname']} {$data['u_lname']} {$data['u_suffix']}");
+          $id_number = $data['id_number'];
       }
-    }catch(Exception $e){
-      echo "Error" . $e;
-    }
-  };
+  } catch (Exception $e) {
+      echo "Error: " . $e->getMessage();
+  }
+
   if (isset($_GET['logout'])) {
-    session_destroy();
-    unset($_SESSION['id_number']);
-    header("location: index.php");
-    }
+      session_destroy();
+      header("location: index.php");
+      exit();
+  }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Profile Information</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <?php
@@ -42,72 +45,66 @@
         <?php
             include '../Assets/components/RegistrarSidebar.php';
         ?>
-        <!-- Main content -->
-        <div class="content p-4 flex-grow-1">
-            <h4 class="text-muted">Dashboard</h4>
-            <div class="main-content">
+
+            <!-- Main Content -->
+            <div class="col-md-10 p-4">
+                <h4 class="text-muted">Dashboard</h4>
+
                 <div class="row">
-                    <div class="col-12 col-sm-4 col-md-4 col-lg-4 mb-3 ">
-                        <div class="box d-flex flex-column justify-content-center align-items-center p-4 border border-success rounded" style="min-height: 150px; min-width: 100%;">
-                            <div class="text-success text-bold mb-2">Students</div>
+                    <!-- Student Count -->
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <div class="box text-center p-4 border border-success rounded">
+                            <div class="text-success fw-bold">Students</div>
                             <span class="h4 text-dark">
                                 <?php 
-                                    $sql = "SELECT count(*) countStudents FROM students_tbl WHERE s_status = 'Active'";
-
+                                    $sql = "SELECT COUNT(*) AS countStudents FROM students_tbl WHERE s_status = 'Active'";
                                     try {
                                         $result = $conn->prepare($sql);
                                         $result->execute();
                                         $row = $result->fetch(PDO::FETCH_ASSOC); 
-
-                                        if ($row) {
-                                            echo "{$row['countStudents']}";
-                                        }
+                                        echo $row ? $row['countStudents'] : '0';
                                     } catch (Exception $e) {
-                                        echo "Unexpected error has occurred! " . $e->getMessage();
+                                        echo "Error: " . $e->getMessage();
                                     }
                                 ?>
                             </span> 
                         </div>
                     </div>
-                    <div class="col-12 col-sm-4 col-md-4 col-lg-4 mb-3">
-                        <div class="box d-flex flex-column justify-content-center align-items-center p-4 border border-success rounded" style="min-height: 150px; min-width: 100%;">
-                            <div class="text-success text-bold mb-2">Faculty</div>
+
+                    <!-- Faculty Count -->
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <div class="box text-center p-4 border border-success rounded">
+                            <div class="text-success fw-bold">Faculty</div>
                             <span class="h4 text-dark">
                                 <?php 
-                                    $sql = "SELECT count(*) as countFaculty FROM users_tbl WHERE role = 'Faculty' and user_status = 'Active'";
-
+                                    $sql = "SELECT COUNT(*) AS countFaculty FROM users_tbl WHERE role = 'Faculty' AND user_status = 'Active'";
                                     try {
                                         $result = $conn->prepare($sql);
                                         $result->execute();
                                         $row = $result->fetch(PDO::FETCH_ASSOC); 
-
-                                        if ($row) {
-                                            echo "{$row['countFaculty']}";
-                                        }
+                                        echo $row ? $row['countFaculty'] : '0';
                                     } catch (Exception $e) {
-                                        echo "Unexpected error has occurred! " . $e->getMessage();
+                                        echo "Error: " . $e->getMessage();
                                     }
                                 ?>
                             </span>
                         </div>
                     </div>
-                    <div class="col-12 col-sm-4 col-md-4 col-lg-4 mb-3">
-                        <div class="box d-flex flex-column justify-content-center align-items-center p-4 border border-success rounded" style="min-height: 150px; min-width: 100%;">
-                            <div class="text-success text-bold mb-2">Registrar</div> 
+
+                    <!-- Registrar Count -->
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <div class="box text-center p-4 border border-success rounded">
+                            <div class="text-success fw-bold">Registrar</div>
                             <span class="h4 text-dark">
                                 <?php 
-                                    $sql = "SELECT count(*) as countRegistrar FROM users_tbl WHERE role = 'Registrar' and user_status = 'Active'";
-
+                                    $sql = "SELECT COUNT(*) AS countRegistrar FROM users_tbl WHERE role = 'Registrar' AND user_status = 'Active'";
                                     try {
                                         $result = $conn->prepare($sql);
                                         $result->execute();
                                         $row = $result->fetch(PDO::FETCH_ASSOC); 
-
-                                        if ($row) {
-                                            echo "{$row['countRegistrar']}";
-                                        }
+                                        echo $row ? $row['countRegistrar'] : '0';
                                     } catch (Exception $e) {
-                                        echo "Unexpected error has occurred! " . $e->getMessage();
+                                        echo "Error: " . $e->getMessage();
                                     }
                                 ?>
                             </span> 
@@ -116,39 +113,102 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-12 col-sm-4 col-md-4 col-lg-4 mb-3">
-                    <div class="box d-flex flex-column justify-content-center align-items-center p-3 border border-success rounded" style="min-height: 150px; min-width: 100%;">
-                            <div class="text-success text-bold mb-2">Grade Submission</div>
-                            <!-- Circular Progress Bar -->
-                            <div class="position-relative">
-                                <svg width="250" height="250">
-                                    <circle cx="100" cy="100" r="70" stroke="#e0e0e0" stroke-width="20" fill="none"/>
-                                    <circle cx="100" cy="100" r="70" stroke="green" stroke-width="20" fill="none" stroke-dasharray="189" stroke-dashoffset="-95"/>
-                                </svg>
-                                <div class="position-absolute top-50 start-50 translate-middle fw-bold text-dark">50%</div>
+                    <!-- Reported Bugs -->
+                    <div class="col-lg-6 mb-3">
+                        <div class="box-2 p-3 border border-success rounded">
+                            <div class="text-success fw-bold mb-2">Reported Bugs</div>
+                            <div class="table-responsive" style="height: 40vh; overflow-y: auto;">
+                                <table class="table table-striped">
+                                    <thead class="text-center">
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Ticket Number</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-center">
+                                        <?php
+                                            $sql = "SELECT * FROM bugs_tbl WHERE fk_user_id=:user_id ORDER BY bug_status DESC";
+                                            try {
+                                                $result = $conn->prepare($sql);
+                                                $result->execute(['user_id' => $user_id]);
+                                                $i = 1;
+                                                while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                                                    echo "<tr>
+                                                            <td>{$i}</td>
+                                                            <td>{$row["bug_ticket"]}</td>
+                                                            <td>{$row["bug_status"]}</td>
+                                                            <td>
+                                                                <a href='ViewTicket.php?bug_id={$row["bug_id"]}' class='btn btn-info btn-sm'>
+                                                                    <i class='fas fa-eye'></i>
+                                                                </a>
+                                                            </td>
+                                                          </tr>";
+                                                    $i++;
+                                                }
+                                                if ($i === 1) {
+                                                    echo "<tr><td colspan='4'>No records found.</td></tr>";
+                                                }
+                                            } catch (Exception $e) {
+                                                echo "Error: " . $e->getMessage();
+                                            }
+                                        ?>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-sm-8 col-md-8 col-lg-8 mb-3">
-                        <div class="box d-flex flex-column p-4 border border-success rounded" style="min-height: 50vh; width: 100%;">
-                            <div class="text-success text-bold mb-2"></div> 
+
+                    <!-- Users Table -->
+                    <div class="col-lg-6 mb-3">
+                        <div class="box-2 p-3 border border-success rounded">
+                            <div class="text-success fw-bold mb-2">Faculty</div>
+                            <div class="table-responsive" style="height: 40vh; overflow-y: auto;">
+                                <table class="table table-striped">
+                                    <thead class="text-center">
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Name</th>
+                                            <th>Role</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-center">
+                                        <?php
+                                            $sql = "SELECT * FROM users_tbl WHERE role = 'Faculty'";
+                                            try {
+                                                $result = $conn->prepare($sql);
+                                                $result->execute();
+                                                $i = 1;
+                                                while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                                                    $roleLabel = ($row["role"] == 'Faculty') ? "<span class='badge bg-primary'>Faculty</span>" : "<span class='badge bg-secondary'>Registrar</span>";
+                                                    echo "<tr>
+                                                            <td>{$i}</td>
+                                                            <td>{$row["id_number"]}</td>
+                                                            <td>{$roleLabel}</td>
+                                                            <td>
+                                                                <a href='ViewRegistrarUser.php?user_id={$row["user_id"]}' class='btn btn-info btn-sm'>
+                                                                    <i class='fas fa-eye'></i>
+                                                                </a>
+                                                            </td>
+                                                          </tr>";
+                                                    $i++;
+                                                }
+                                            } catch (Exception $e) {
+                                                echo "Error: " . $e->getMessage();
+                                            }
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <style>
-        @media (max-width: 768px) {
-            .d-flex {
-                flex-wrap: wrap;  
-            }
-            .d-flex > * {
-                margin-bottom: 5px; 
-            }
-        }
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

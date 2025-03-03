@@ -87,7 +87,7 @@
                         <form method="post" action="AddSection.php">
                             <!-- Strand Dropdown -->
                             Strand:
-                            <select name="fk_strand_id" id="fk_strand_id" required>
+                            <select class="form-control" name="fk_strand_id" id="fk_strand_id" required>
                                 <option value="">Select Strand</option>
                                 <?php
                                     $sql = "SELECT strand_id, strand_name, strand_nn FROM strands_tbl";
@@ -109,7 +109,7 @@
 
                             <!-- Year Level Dropdown -->
                             Year Level:
-                            <select name="fk_year_id" id="fk_year_id" required>
+                            <select class="form-control" name="fk_year_id" id="fk_year_id" required>
                                 <option value="">Select Year Level</option>
                                 <?php
                                     $sql = "SELECT year_level_id, yl_name FROM year_levels_tbl";

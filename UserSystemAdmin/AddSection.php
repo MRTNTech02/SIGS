@@ -3,33 +3,29 @@
   include ("../server_connection/db_connect.php");
   if (empty($_SESSION["username"]) && empty ($_SESSION["a_password"])) {
     header("location: index.php");
-    exit();
   }
   if (!empty($_SESSION["username"])){
     $admin_id = $_SESSION["admin_id"];
 
-    $sql = "SELECT * FROM admin_tbl WHERE admin_id = :admin_id";
+    $sql = "SELECT * FROM admin_tbl WHERE admin_id=$admin_id";
     try{
-      $stmt = $conn->prepare($sql);
-      $stmt->bindParam(':admin_id', $admin_id, PDO::PARAM_INT);
-      $stmt->execute();
+      $result = $conn->prepare($sql);
+      $result->execute();
 
-      if($stmt->rowCount() > 0){
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-        $admin_name = $data['a_fname'] . ' ' . $data['a_lname'];
+      if($result->rowCount()>0){
+        $data = $result->fetch(PDO::FETCH_ASSOC);
+        $admin_name = $data['a_fname'] . ' ' . $data['a_lname'] . ' ' . $data['a_suffix'];
         $username = $data['username'];
       }
     }catch(Exception $e){
-      echo "Error: " . $e->getMessage();
-      exit();
+      echo "Error" . $e;
     }
-  }
+  };
   if (isset($_GET['logout'])) {
     session_destroy();
     unset($_SESSION['username']);
     header("location: index.php");
-    exit();
-  }
+    }
 ?>
 
 <?php
@@ -91,7 +87,7 @@
                         <form method="post" action="AddSection.php">
                             <!-- Strand Dropdown -->
                             Strand:
-                            <select name="fk_strand_id" id="fk_strand_id" required>
+                            <select class="form-control" name="fk_strand_id" id="fk_strand_id" required>
                                 <option value="">Select Strand</option>
                                 <?php
                                     $sql = "SELECT strand_id, strand_name, strand_nn FROM strands_tbl";
@@ -113,7 +109,7 @@
 
                             <!-- Year Level Dropdown -->
                             Year Level:
-                            <select name="fk_year_id" id="fk_year_id" required>
+                            <select class="form-control" name="fk_year_id" id="fk_year_id" required>
                                 <option value="">Select Year Level</option>
                                 <?php
                                     $sql = "SELECT year_level_id, yl_name FROM year_levels_tbl";

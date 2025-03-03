@@ -27,7 +27,7 @@
     header("location: index.php");
     }
 ?>
-<?php 
+<?php
 
   // Fetch section details for editing
   if (isset($_GET['section_id'])) {
@@ -77,32 +77,34 @@
                 <div class="card-body">
                     <form method="post" action="">
                         <input type="hidden" name="section_id" value="<?php echo $section['section_id']; ?>">
-                        
-                        Strand:
-                        <select name="fk_strand_id" id="fk_strand_id" required>
-                            <option value="">Select Strand</option>
-                            <?php
-                                $sql = "SELECT strand_id, strand_name, strand_nn FROM strands_tbl";
-                                $result = $conn->query($sql);
-                                while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                                    $selected = ($row["strand_id"] == $section["fk_strand_id"]) ? "selected" : "";
-                                    echo "<option value='{$row["strand_id"]}' $selected>{$row["strand_name"]} ({$row["strand_nn"]})</option>";
-                                }
-                            ?>
-                        </select><br>
-
-                        Year Level:
-                        <select name="fk_year_id" id="fk_year_id" required>
-                            <option value="">Select Year Level</option>
-                            <?php
-                                $sql = "SELECT year_level_id, yl_name FROM year_levels_tbl";
-                                $result = $conn->query($sql);
-                                while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                                    $selected = ($row["year_level_id"] == $section["fk_year_id"]) ? "selected" : "";
-                                    echo "<option value='{$row["year_level_id"]}' $selected>{$row["yl_name"]}</option>";
-                                }
-                            ?>
-                        </select><br>
+                        <div class="form-group">
+                          Strand:
+                          <select class="form-control" name="fk_strand_id" id="fk_strand_id" required>
+                              <option value="">Select Strand</option>
+                              <?php
+                                  $sql = "SELECT strand_id, strand_name, strand_nn FROM strands_tbl";
+                                  $result = $conn->query($sql);
+                                  while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                                      $selected = ($row["strand_id"] == $section["fk_strand_id"]) ? "selected" : "";
+                                      echo "<option value='{$row["strand_id"]}' $selected>{$row["strand_name"]} ({$row["strand_nn"]})</option>";
+                                  }
+                              ?>
+                          </select><br>
+                        </div>
+                        <div class="form-group">
+                          Year Level:
+                          <select class="form-control" name="fk_year_id" id="fk_year_id" required>
+                              <option value="">Select Year Level</option>
+                              <?php
+                                  $sql = "SELECT year_level_id, yl_name FROM year_levels_tbl";
+                                  $result = $conn->query($sql);
+                                  while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                                      $selected = ($row["year_level_id"] == $section["fk_year_id"]) ? "selected" : "";
+                                      echo "<option value='{$row["year_level_id"]}' $selected>{$row["yl_name"]}</option>";
+                                  }
+                              ?>
+                          </select><br>
+                        </div>
 
                         <div class="form-group">
                             <label for="section_name">Section Name</label>
