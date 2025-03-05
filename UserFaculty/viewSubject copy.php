@@ -41,19 +41,32 @@
     $section_id = isset($_GET['section_id']) ? $_GET['section_id'] : null;
     $yl_name = isset($_GET['yl_name']) ? $_GET['yl_name'] : null;
     $strand_nn = isset($_GET['strand_nn']) ? $_GET['strand_nn'] : null;
-    // $student_grade_id = isset($_GET['student_grade_id']) ? $_GET['student_grade_id'] : null;
     // Fetch section, year level, and strand details for the selected subject
     $section_name = null;
     $subject_name = null;
-    // $student_grade = null;
-        $sql = "SELECT B.yl_name, C.strand_nn, D.section_name, D.section_id, E.subject_id, E.subject_name
-                FROM sc_assignments_tbl AS SC
-                INNER JOIN subjects_taking_tbl AS ST ON SC.assignment_id = ST.fk_subject_id
-                INNER JOIN year_levels_tbl AS B ON SC.fk_year_id = B.year_level_id
-                INNER JOIN strands_tbl AS C ON SC.fk_strand_id = C.strand_id
-                INNER JOIN sections_tbl AS D ON SC.fk_section_id = D.section_id
-                INNER JOIN subjects_tbl AS E ON ST.fk_subject_id = E.subject_id
-                GROUP BY E.subject_id = :subject_id DESC";
+        $sql = "SELECT SUB.*, GRADE.student_grade FROM student_grades_tbl AS GRADE 
+            inner JOIN (SELECT SUB.subject_name, ST.s_taking_id AS fk_student_subject_id, TEACH.user_id AS fk_faculty_id, SA.fk_student_id as STUDENT, STUD.student_id, STUD.s_fname, SEC.section_name, STRAND.strand_nn, YL.yl_name, SEC.section_id, STRAND.strand_id, YL.year_level_id, ST.fk_subject_id,
+            TEACH.u_fname FROM faculty_assignments_tbl AS FA 
+            INNER JOIN subjects_tbl AS SUB ON FA.fk_subject_id=SUB.subject_id
+            INNER JOIN users_tbl AS TEACH ON FA.fk_user_id=TEACH.user_id
+            INNER JOIN subjects_taking_tbl AS ST ON SUB.subject_id=ST.fk_subject_id
+            INNER JOIN sc_assignments_tbl AS SA ON ST.fk_assignment_id=SA.assignment_id
+            INNER JOIN students_tbl AS STUD ON SA.fk_student_id=STUD.student_id 
+            INNER JOIN year_levels_tbl as YL ON SA.fk_year_id=YL.year_level_id
+            INNER JOIN strands_tbl as STRAND ON SA.fk_strand_id=STRAND.strand_id
+            INNER JOIN sections_tbl as SEC ON SA.fk_section_id=SEC.section_id
+                    WHERE SEC.section_id = 1
+            AND TEACH.user_id = 3
+            AND STRAND.strand_id = 1
+            AND YL.year_level_id = 2
+            AND ST.fk_subject_id = 1) AS SUB 
+            ON GRADE.fk_student_subject_id=SUB.fk_student_subject_id
+            AND GRADE.fk_faculty_id = SUB.fk_faculty_id
+            WHERE SUB.section_id = 1
+            AND SUB.fk_faculty_id = 3
+            AND SUB.strand_id = 1
+            AND SUB.year_level_id = 2
+            AND SUB.fk_subject_id = 1;";
         
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':subject_id', $subject_id, PDO::PARAM_INT);
@@ -64,15 +77,13 @@
             $yl_name = $section['yl_name'];
             $strand_nn = $section['strand_nn'];
             $section_name = $section['section_name'];
-            $subject_name = $section['subject_name']; 
+            $subject_name = $section['subject_name'];  // <-- Make sure this is added
         }
         
         if ($yl_name && $strand_nn && $section_name) {
             $sql = "SELECT SC.assignment_id, A.lrn_number, A.s_fname, A.s_lname, A.s_suffix, A.s_status,
                         B.yl_name, C.strand_nn, D.section_name
-                    FROM subjects_taking_tbl AS ST
-                    INNER JOIN sc_assignments_tbl AS sc ON ST.fk_assignment_id = sc.assignment_id
-                    INNER JOIN subjects_tbl AS sub ON .fk_subject_id = sub.subject_id
+                    FROM sc_assignments_tbl AS SC
                     INNER JOIN students_tbl AS A ON SC.fk_student_id = A.student_id
                     INNER JOIN year_levels_tbl AS B ON SC.fk_year_id = B.year_level_id
                     INNER JOIN strands_tbl AS C ON SC.fk_strand_id = C.strand_id
@@ -96,25 +107,20 @@
     $students = [];
     if ($section) {
         try {
-            $sql = "SELECT SC.assignment_id, A.lrn_number, A.s_fname, A.s_lname, A.s_suffix, A.s_status,
-                        B.yl_name, C.strand_nn, D.section_name, E.student_grade_id, E.student_grade
+            $sql = "SELECT SC.assignment_id, SC.fk_strand_id, A.student_id, A.s_fname, A.s_lname, A.s_status,
+                           B.student_grade_id, B.student_grade, ST.s_taking_id
                     FROM sc_assignments_tbl AS SC
+                    INNER JOIN subjects_taking_tbl AS ST ON SC.assignment_id = ST.s_taking_id
                     INNER JOIN students_tbl AS A ON SC.fk_student_id = A.student_id
-                    INNER JOIN year_levels_tbl AS B ON SC.fk_year_id = B.year_level_id
-                    INNER JOIN strands_tbl AS C ON SC.fk_strand_id = C.strand_id
-                    INNER JOIN sections_tbl AS D ON SC.fk_section_id = D.section_id
-                    INNER JOIN student_grades_tbl AS E ON SC.fk_student_id = E.student_grade_id
-                    WHERE B.yl_name = :yl_name AND C.strand_nn = :strand_nn AND D.section_name = :section_name";
+                    INNER JOIN student_grades_tbl AS B ON SC.fk_student_id = B.student_grade_id
+                    GROUP BY SC.fk_section_id = :section_id AND ST.s_taking_id = :subject_id";
             
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':yl_name', $yl_name, PDO::PARAM_STR);
-            $stmt->bindParam(':strand_nn', $strand_nn, PDO::PARAM_STR);
-            $stmt->bindParam(':section_name', $section_name, PDO::PARAM_STR);
-            // $stmt->bindParam(':student_grade', $student_grade, PDO::PARAM_STR);
-    
-            if (!$stmt->execute()) {
-                print_r($stmt->errorInfo()); // Show errors if query fails
-            }
+            $stmt->bindParam(':section_id', $section['section_id'], PDO::PARAM_INT);
+            // $stmt->bindParam(':year_id', $section['yl_name'], PDO::PARAM_INT);
+            // $stmt->bindParam(':strand_id', $section['strand_id'], PDO::PARAM_INT);
+            $stmt->bindParam(':subject_id', $subject_id, PDO::PARAM_INT);
+            $stmt->execute();
             $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
             echo "<p class='text-danger'>Error fetching students: " . $e->getMessage() . "</p>";

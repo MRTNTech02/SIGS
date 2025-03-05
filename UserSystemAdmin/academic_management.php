@@ -77,7 +77,7 @@
                                 <tr>
                                     <th>No.</th>
                                     <th>Strand Name</th>
-                                    <th>Abreviation</th>
+                                    <th>Abbreviation</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>

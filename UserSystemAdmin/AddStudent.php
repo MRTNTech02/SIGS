@@ -39,8 +39,7 @@
             "s_suffix" => $_POST["s_suffix"],
             "s_sex" => $_POST["s_sex"],
             "s_birthdate" => $_POST["s_birthdate"],
-            "s_status" => $_POST["s_status"],
-            "s_profile" => $_POST["s_profile"]
+            "s_status" => $_POST["s_status"]
         ];
         $_SESSION["step"] = 2; // Move to step 2
         header("Location: AddStudent.php"); // Redirect to avoid resubmission issues
@@ -52,8 +51,8 @@
         if (isset($_SESSION["student"])) {
             try {
                 // Insert student record
-                $stmt = $conn->prepare("INSERT INTO students_tbl (lrn_number, s_fname, s_mname, s_lname, s_suffix, s_sex, s_birthdate, s_status, s_profile) 
-                VALUES (:lrn_number, :s_fname, :s_mname, :s_lname, :s_suffix, :s_sex, :s_birthdate, :s_status, :s_profile)");
+                $stmt = $conn->prepare("INSERT INTO students_tbl (lrn_number, s_fname, s_mname, s_lname, s_suffix, s_sex, s_birthdate, s_status) 
+                VALUES (:lrn_number, :s_fname, :s_mname, :s_lname, :s_suffix, :s_sex, :s_birthdate, :s_status)");
                 
                 $stmt->execute($_SESSION["student"]);
                 $student_id = $conn->lastInsertId();
@@ -102,7 +101,7 @@
                     <div class="card">
                         <div class="card-body">
                             <form method="post" action="AddStudent.php">
-                                <input type="hidden" id="s_profile" name="s_profile" value="studentdefaultprofile.jpg">
+
                                 <input type="hidden" id="s_status" name="s_status" value="Active">
                                 <div class="form-row">
                                     <div class="form-group col-md-3">

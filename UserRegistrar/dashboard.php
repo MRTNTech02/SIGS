@@ -208,6 +208,13 @@
             </div>
         </div>
     </div>
+    <style>
+        html, body {
+            height: 100vh;
+            margin: 0;
+            overflow: hidden; /* Prevents scrolling */
+            }
+    </style>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

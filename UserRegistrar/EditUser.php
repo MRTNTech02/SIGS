@@ -104,7 +104,12 @@
                 header("Location: user_management.php");
                 exit();
             } else {
-                echo "No record has been updated";
+                echo "
+                    <script>
+                    alert('No Record has been updated');
+                    window.location.href = 'user_management.php';
+                </script>
+                ";
             }
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();

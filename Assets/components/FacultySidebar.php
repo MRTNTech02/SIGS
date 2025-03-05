@@ -22,15 +22,9 @@
                     </li>
                     <li class="nav-item">
                         <a href="gradeSection.php" class="nav-link text-dark" data-menu="students">
-                            <i class="fas fa-user"></i> <span>Students</span>
+                            <i class="fas fa-user"></i> <span>Assigned Sections</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="submitGrade.php" class="nav-link text-dark" data-menu="grades">
-                            <i class="fas fa-file-text"></i> <span>Grade Submission</span>
-                        </a>
-                    </li>
-                    
                     <li class="nav-item">
                         <a href="reportBug.php" class="nav-link text-dark" data-menu="bug">
                             <i class="fas fa-bug"></i> <span>Report a Bug</span>

@@ -93,7 +93,7 @@
                                     <input type="text" class="form-control" id="strand_name" name="strand_name" required>
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <label for="strand_nn">Strand Abreviation</label>
+                                    <label for="strand_nn">Strand Abbreviation</label>
                                     <input type="text" class="form-control" id="strand_nn" name="strand_nn" >
                                 </div>
                             </div>

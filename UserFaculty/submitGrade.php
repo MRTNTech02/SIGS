@@ -35,13 +35,41 @@
         exit();
 }
 ?>
+<?php
+    if (isset($_GET['f_assignment_id'])) {
+        $f_assignment_id = $_GET['f_assignment_id'];
+
+        $sql = "SELECT * FROM
+        faculty_assignments_tbl AS FA INNER JOIN subjects_tbl AS A ON FA.fk_subject_id=A.subject_id
+        INNER JOIN year_levels_tbl AS B ON FA.fk_year_id=B.year_level_id 
+        INNER JOIN strands_tbl AS C ON FA.fk_strand_id=C.strand_id 
+        INNER JOIN sections_tbl AS D ON FA.fk_section_id=section_id 
+        INNER JOIN users_tbl As E ON FA.fk_user_id=E.user_id WHERE FA.f_assignment_id='$f_assignment_id'";
+        try{
+        $result = $conn->prepare($sql);
+        $result->execute();
+
+        if($result->rowCount()>0){
+            $data = $result->fetch(PDO::FETCH_ASSOC);
+            $subject_name = $data["subject_name"];
+            $yl_name = $data["yl_name"];
+            $strand_nn = $data["strand_nn"];
+            $section_id = $data["section_id"];
+            // $student_id = $data["student_id"];
+            $subject_id = $data["subject_id"];
+        }
+        }catch(Exception $e){
+        echo "Error" . $e;
+        }
+    };
+?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade Submission</title>
+    <title>My Assigned Subjects</title>
     <!-- Bootstrap -->
     <link rel="stylesheet" href="../../Bootstrap/css/bootstrap.min.css">
     <!-- Bootstrap Font Awesome Icons -->
@@ -55,7 +83,7 @@
 
         <!-- Main content -->
         <div class="content p-4 flex-grow-1">
-            <h4 class="text-muted">Grade Submission</h4>
+            <h4 class="text-muted">My Assigned Subjects</h4>
             <div class="card table-container">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
@@ -64,7 +92,7 @@
                             <input type="text" class="form-control form-control-sm me-1" id="searchInput" placeholder="Search Name">
                             <button class="btn btn-success" id="searchButton">Search</button>
                         </div>
-                        <div class="btn-group">
+                        <!-- <div class="btn-group">
                                 <button type="button" class="btn border-black dropdown-toggle" 
                                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fas fa-filter"></i> Filter by 
@@ -76,7 +104,7 @@
                                     <button class="dropdown-item filter-btn" data-filter="Section">Section</button>
                                     <button class="dropdown-item filter-btn" data-filter="Status">Status</button>
                                 </div>
-                            </div>
+                            </div> -->
                     </div>
 
                     <!-- Table -->
@@ -99,6 +127,7 @@
                                     subjects_tbl.subject_name, 
                                     strands_tbl.strand_nn, 
                                     year_levels_tbl.yl_name, 
+                                    sections_tbl.section_id, 
                                     sections_tbl.section_name, 
                                     subjects_tbl.subject_status 
                                     FROM subjects_tbl
@@ -127,7 +156,7 @@
                                                         <td class='text-center'>
                                                             <?php 
                                                             echo "
-                                                                <a href='viewSubject.php?subject_id={$row["subject_id"]}' class='btn btn-info btn-sm'>
+                                                                <a href='viewSubject.php?subject_id={$row["subject_id"]}section_id={$row["section_id"]}' class='btn btn-info btn-sm'>
                                                                     <i class='fas fa-eye'></i>
                                                                 </a>
                                                                 <a href='' class='btn btn-danger btn-sm'>
