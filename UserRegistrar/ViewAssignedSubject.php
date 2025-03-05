@@ -191,9 +191,15 @@
                                     }
                                 }else{
                                     echo "
-                                        <a href='' class='btn btn-success'>
-                                            Approve Grades
-                                        </a>
+                                        <form action='approveGrades.php' method='POST'>
+                                            <input type='hidden' name='section_id' id='section_id' value='$section_id'>
+                                            <input type='hidden' name='subject_id' id='subject_id' value='$subject_id'>
+                                            <input type='hidden' name='f_assignment_id' id='f_assignment_id' value='$f_assignment_id'>
+
+                                            <button type='submit' name='approve' class='btn btn-success'>
+                                                Approve Grades
+                                            </button>
+                                        </form>
                                     ";
                                 }
                             }else{

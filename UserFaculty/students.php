@@ -107,11 +107,13 @@
                                     <th>Student Name</th>
                                     <th>Grade</th>
                                     <th>Action</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody id="tableBody" align="center">
                                 <?php
-                                    $sql = "SELECT DISTINCT SUB.*, GRADE.student_grade, GRADE.student_grade_id  FROM student_grades_tbl AS GRADE 
+                                    $sql = "SELECT DISTINCT SUB.*, GRADE.student_grade, GRADE.student_grade_id, GRADE.grade_status
+                                     FROM student_grades_tbl AS GRADE 
                                     right JOIN (SELECT 
                                     SUB.subject_name, ST.s_taking_id AS fk_student_subject_id, 
                                     TEACH.user_id AS fk_faculty_id, SA.fk_student_id as STUDENT, 
@@ -154,28 +156,72 @@
                                                     <tr data-assignment-id='<?= {$row["s_taking_id"]} ?>' data-subject-id='<?= {$row["fk_faculty_id"]} ?>'>
                                                         <td class='text-center'>{$i} </td>
                                                         <td>{$row["s_fname"]} {$row["s_lname"]} {$row["s_suffix"]}</td>
-                                                        <td>
-                                                        <form action='insertGrade.php' method='POST'>
-                                                            <div class='grade-wrapper'>
-                                                            <span align='center' class='grade-text' id='gradeText_{$i}'>".htmlspecialchars($row['student_grade'])."</span>
-                                                            <input type='number' class='grade-input' id='gradeInput_{$i}'  name='student_grade' value='".htmlspecialchars($row['student_grade'])."' style='display:none;' max='100' min='0' required>
-                                                            <input type='hidden' id='fk_student_subject_id' name='fk_student_subject_id' value='{$row["s_taking_id"]}' >
-                                                            <input type='hidden' id='fk_faculty_id' name='fk_faculty_id' value='$user_id' >
-                                                            <input type='hidden' id='f_assignment_id' name='f_assignment_id' value='$f_assignment_id' >
+                                                        <td>";
+                                                            if ($row["student_grade"] == NULL){
+                                                                echo"
+                                                                    <form action='insertGrade.php' method='POST'>
+                                                                        <div class='grade-wrapper'>
+                                                                        <span align='center' class='grade-text' id='gradeText_{$i}'>".htmlspecialchars($row['student_grade'])."</span>
+                                                                        <input type='number' class='grade-input' id='gradeInput_{$i}'  name='student_grade' value='".htmlspecialchars($row['student_grade'])."' style='display:none;' max='100' min='0' required>
+                                                                        <input type='hidden' id='fk_student_subject_id' name='fk_student_subject_id' value='{$row["s_taking_id"]}' >
+                                                                        <input type='hidden' id='fk_faculty_id' name='fk_faculty_id' value='$user_id' >
+                                                                        <input type='hidden' id='f_assignment_id' name='f_assignment_id' value='$f_assignment_id' >
 
-                                                            
-                                                            </div>
-                                                            <td>
-                                                            <button class='btn btn-sm btn-warning' onclick='editGrade({$i})'>
-                                                                <i class='fas fa-pencil'></i>
-                                                            </button>
-                                                            
-                                                            <button type='submit' class='save-btn btn btn-sm btn-success' name='register'id='saveBtn_{$i}' style='display:none;'>Save</button>
-                                                            </td>
-                                                        </form>
-                                                        </td>";
+                                                                        
+                                                                        </div>
+                                                                        <td>
+                                                                        <button class='btn btn-sm btn-info' onclick='submitGrade({$i})'>
+                                                                            <i class='fas fa-plus-circle'></i>
+                                                                        </button>
+                                                                        
+                                                                        <button type='submit' class='save-btn btn btn-sm btn-success' name='register'id='saveBtn_{$i}' style='display:none;'>Save</button>
+                                                                        </td>
+                                                                    </form>
+                                                                ";
+                                                            }else{
+                                                                if($row["grade_status"] == "Pending"){
+                                                                    echo "
+                                                                        <form action='updateGrade.php' method='POST'>
+                                                                            <div class='grade-wrapper'>
+                                                                                <span align='center' class='grade-text' id='gradeText_{$i}'>".htmlspecialchars($row['student_grade'])."</span>
+                                                                                <input type='number' class='grade-input' id='gradeInput_{$i}'  name='student_grade' value='".htmlspecialchars($row['student_grade'])."' style='display:none;' max='100' min='0' required>
+                                                                                <input type='hidden' id='student_grade_id' name='student_grade_id' value='{$row["student_grade_id"]}' >
+                                                                                <input type='hidden' id='f_assignment_id' name='f_assignment_id' value='$f_assignment_id' >
+                                                                            </div>
+                                                                            <td>
+                                                                                <button type='button' class='btn btn-sm btn-warning' onclick='editGrade({$i})'>
+                                                                                    <i class='fas fa-pencil'></i>
+                                                                                </button>
+                                                                                
+                                                                                <button type='submit' class='save-btn btn btn-sm btn-success' name='register' id='updateBtn_{$i}' style='display:none;'>Update</button>
+                                                                            </td>
+                                                                        </form>
+                                                                    ";
+                                                                }else{
+                                                                    echo "
+                                                                        <form action='updateGrade.php' method='POST'>
+                                                                            {$row["student_grade"]}
+                                                                            <td>
+                                                                                Grade already approved.
+                                                                            </td>
+                                                                        </form>
+                                                                    ";
+                                                                }
+                                                            }
+                                                        echo"
+                                                        </td>
+                                                        <td>";
+                                                            if($row["grade_status"] == NULL){
+                                                                echo"No submitted grade.";
+                                                            }else{
+                                                                if($row["grade_status"] == "Pending"){
+                                                                    echo"Pending for Approval.";
+                                                                }else{
+                                                                    echo $row["grade_status"];
+                                                                }
+                                                            }
+                                                        echo"</td>
                                                          
-                                                    echo "
                                                     </tr>";
                                                 $i++;
                                                 
@@ -275,33 +321,26 @@
 
         renderTable(); // Initial render
       });
-      function editGrade(index) {
+
+      function submitGrade(index) {
             document.getElementById("gradeText_" + index).style.display = "none";
             document.getElementById("gradeInput_" + index).style.display = "inline";
             document.getElementById("saveBtn_" + index).style.display = "inline";
         }
 
-        // function saveGrade(index, fkAssignmentId, fkSubjectId) {
-        //     let grade = document.getElementById("gradeInput_" + index).value;
+        function editGrade(index) {
+            event.preventDefault(); // Prevents the form from submitting when clicking the edit button
 
-        //     // AJAX request to send data to the backend
-        //     let xhr = new XMLHttpRequest(); 
-        //     xhr.open("POST", "insertGrade.php", true);
-        //     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            // Hide the span text and show the input field
+            document.getElementById("gradeText_" + index).style.display = "none";
+            document.getElementById("gradeInput_" + index).style.display = "inline";
 
-        //     xhr.onreadystatechange = function () {
-        //         if (xhr.readyState == 4 && xhr.status == 200) {
-        //             alert(xhr.responseText); // Debugging: See response from the server
-        //             document.getElementById("gradeText_" + index).innerText = grade;
-        //             document.getElementById("gradeText_" + index).style.display = "inline";
-        //             document.getElementById("gradeInput_" + index).style.display = "none";
-        //             document.getElementById("saveBtn_" + index).style.display = "none";
-        //         }
-        //     };
+            // Show the update button
+            document.getElementById("updateBtn_" + index).style.display = "inline";
+        }
+</script>
 
-        //     // Send data
-        //     xhr.send("s_taking_id=" + fkAssignmentId + "&fk_faculty_id=" + fkSubjectId + "&student_grade=" + grade);
-        // }
+
     </script>
 
 

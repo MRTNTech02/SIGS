@@ -54,7 +54,7 @@
         $strand_id = $_POST["strand_id"];
         $strand_name = $_POST["strand_name"];
         $strand_nn = $_POST["strand_nn"];
-    
+        $current_datetime = date('Y-m-d H:i:s');
         $sql = "UPDATE strands_tbl SET 
             strand_name = :strand_name, 
             strand_nn = :strand_nn, 

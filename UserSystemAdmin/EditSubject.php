@@ -52,7 +52,8 @@
     if (isset($_POST['saveEdit'])) {
         $subject_id = $_POST["subject_id"];
         $subject_name = $_POST["subject_name"];
-    
+        $current_datetime = date('Y-m-d H:i:s');
+        
         $sql = "UPDATE subjects_tbl SET 
             subject_name = :subject_name, 
             updt_ts = :updt_ts
