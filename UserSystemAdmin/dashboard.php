@@ -131,7 +131,7 @@
                                     </thead>
                                     <tbody id="tableBody" align="center">
                                         <?php
-                                            $sql = "SELECT * FROM bugs_tbl ORDER BY bug_status DESC";
+                                            $sql = "SELECT * FROM bugs_tbl  WHERE bug_status = 'Open' ORDER BY insrt_ts DESC";
                                             try
                                             {
                                                 $result=$conn->prepare($sql);

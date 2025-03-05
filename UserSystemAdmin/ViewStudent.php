@@ -40,7 +40,8 @@
         $assignment_id = $_GET['assignment_id'];
 
         $sql = "SELECT SC.assignment_id, A.student_id, A.lrn_number, A.s_fname, A.s_lname, A.s_mname, 
-        A.s_suffix, A.s_status, B.yl_name, C.strand_nn, C.strand_name, D.section_name
+        A.s_suffix, A.s_status, B.yl_name, C.strand_nn, C.strand_name, C.strand_id, D.section_name, D.section_id,
+        B.year_level_id
         FROM sc_assignments_tbl AS SC 
         INNER JOIN students_tbl AS A ON SC.fk_student_id = A.student_id
         INNER JOIN year_levels_tbl AS B ON SC.fk_year_id = B.year_level_id
@@ -64,7 +65,10 @@
                 $student_fullname = $data["s_fname"] . " " . $data["s_lname"];
                 $s_status = $data["s_status"];
                 $s_year_level = $data["yl_name"];
+                $section_id = $data["section_id"];
                 $s_strand = $data["strand_name"];
+                $strand_id = $data["strand_id"];
+                $year_level_id = $data["year_level_id"];
                 $s_strand_nn = $data["strand_nn"];
                 $s_section = $data["section_name"];
                 $assignment_id = $data["assignment_id"];
@@ -86,7 +90,7 @@
     $semester = isset($_GET['semester']) ? $_GET['semester'] : $num_semester;
     $academic_year = isset($_GET['academic_year']) ? $_GET['academic_year'] : $default_academic_year;
 
-    $sql = "SELECT stud.s_fname, stud.s_lname, stud.s_suffix, sub.subject_name, teach.u_fname, 
+    $sql = "SELECT DISTINCT stud.s_fname, stud.s_lname, stud.s_suffix, sub.subject_name, teach.u_fname, 
         teach.u_lname, teach.u_suffix, subs_t.semester, subs_t.academic_year, subs_t.fk_assignment_id,
         grade.student_grade 
         FROM subjects_taking_tbl AS subs_t
@@ -117,6 +121,7 @@
     <title>Student Information</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../Bootstrap/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery for AJAX -->
 </head>
 <body>
     <?php
@@ -141,20 +146,26 @@
                                     </div>
                                     <div class="col-lg-7">
                                         <div class="row">
-                                            <div class="col-12 mb-3">
+                                            <div class="col-12">
                                                 <h5>Full Name: <?php echo $student_fullname ?> </h5>
                                             </div>
-                                            <div class="col-12 mb-3">
+                                            <div class="col-12 mb-2">
                                                 <h5>LRN: <?php echo $lrn_number ?> </h5>
                                             </div>
-                                            <div class="col-12 mb-3">
+                                            <div class="col-12">
                                                 <h5>Strand: <?php echo $s_strand . " (" . $s_strand_nn . ")"?> </h5>
                                             </div>
-                                            <div class="col-12 mb-3">
+                                            <div class="col-12">
                                                 <h5>Grade Level: <?php echo $s_year_level ?> </h5>
                                             </div>
-                                            <div class="col-12 mb-3">
+                                            <div class="col-12">
                                                 <h5>Section: <?php echo $s_section ?> </h5>
+                                            </div>
+                                            <div class="col-3">
+                                                <button class="btn btn-warning" data-toggle="modal" data-target="#editModal">
+                                                    <i class="fas fa-pencil"></i>
+                                                    Edit
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -230,6 +241,124 @@
             </div>
         </div>
     </div>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="editModalLabel">Edit Student Information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="update_student.php" method="POST">
+                        <input type="hidden" name="assignment_id" value="<?php echo $assignment_id; ?>">
+
+                        <!-- Strand Dropdown -->
+                        <div class="form-group">
+                            <label for="strand">Strand</label>
+                            <select name="fk_strand_id" id="fk_strand_id" class="form-control" required>
+                                <option value="">Select Strand</option>
+                                <?php
+                                    $sql = "SELECT strand_id, strand_name, strand_nn FROM strands_tbl";
+                                    try {
+                                        $result = $conn->prepare($sql);
+                                        $result->execute();
+                                        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                                            $selected = ($row["strand_id"] == $strand_id) ? "selected" : "";
+                                            echo "<option value='{$row["strand_id"]}' $selected>{$row["strand_name"]} ({$row["strand_nn"]})</option>";
+                                        }
+                                    } catch (Exception $e) {
+                                        echo "<option value=''>Error loading strands</option>";
+                                    }
+                                ?>
+                            </select>
+                        </div>
+
+                        <!-- Year Level Dropdown -->
+                        <div class="form-group">
+                            <label for="year_level">Year Level</label>
+                            <select name="fk_year_id" id="fk_year_id" class="form-control" required>
+                                <option value="">Select Year Level</option>
+                                <?php
+                                    $sql = "SELECT year_level_id, yl_name FROM year_levels_tbl";
+                                    try {
+                                        $result = $conn->prepare($sql);
+                                        $result->execute();
+                                        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                                            $selected = ($row["year_level_id"] == $year_level_id) ? "selected" : "";
+                                            echo "<option value='{$row["year_level_id"]}' $selected>{$row["yl_name"]}</option>";
+                                        }
+                                    } catch (Exception $e) {
+                                        echo "<option value=''>Error loading year levels</option>";
+                                    }
+                                ?>
+                            </select>
+                        </div>
+
+                        <!-- Section Dropdown -->
+                        <div class="form-group">
+                            <label for="section">Section</label>
+                            <select name="fk_section_id" id="fk_section_id" class="form-control">
+                                <option value="">Select Section</option>
+                                <?php
+                                    $sql = "SELECT section_id, section_name FROM sections_tbl WHERE fk_strand_id = ? AND fk_year_id = ?";
+                                    try {
+                                        $result = $conn->prepare($sql);
+                                        $result->execute([$strand_id, $year_level_id]);
+                                        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                                            $selected = ($row["section_id"] == $section_id) ? "selected" : "";
+                                            echo "<option value='{$row["section_id"]}' $selected>{$row["section_name"]}</option>";
+                                        }
+                                    } catch (Exception $e) {
+                                        echo "<option value=''>Error loading sections</option>";
+                                    }
+                                ?>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function(){
+            function loadSections() {
+                var fk_strand_id = $('#fk_strand_id').val();
+                var fk_year_id = $('#fk_year_id').val();
+
+                if (fk_strand_id && fk_year_id) {
+                    $.ajax({
+                        url: "fetch_sections.php",
+                        type: "POST",
+                        data: { fk_strand_id: fk_strand_id, fk_year_id: fk_year_id },
+                        success: function(data) {
+                            console.log("Fetched sections:", data); // Debugging
+                            $('#fk_section_id').html('<option value="">Select Section</option>' + data);
+                        },
+                        error: function(xhr, status, error) {
+                            console.log("AJAX Error:", error);
+                        }
+                    });
+                } else {
+                    $('#fk_section_id').html('<option value="">Select Section</option>');
+                }
+            }
+
+            $('#fk_strand_id, #fk_year_id').change(loadSections);
+        });
+
+    </script>
+
+
+
+
+
     <style>
         .table-container { 
             margin-top: 20px; 
@@ -258,7 +387,9 @@
             border-radius: 50%;
         }
     </style>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 

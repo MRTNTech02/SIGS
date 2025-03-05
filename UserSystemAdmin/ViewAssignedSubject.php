@@ -48,7 +48,7 @@
             $yl_name = $data["yl_name"];
             $strand_nn = $data["strand_nn"];
             $section_id = $data["section_id"];
-            $student_id = $data["student_id"];
+            // $student_id = $data["student_id"];
             $subject_id = $data["subject_id"];
         }
         }catch(Exception $e){

@@ -102,6 +102,7 @@
     <title>Assign To Faculty</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../Bootstrap/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery for AJAX -->
 </head>
 <body>
     <?php
@@ -187,6 +188,7 @@
                                         ?>
                                     </select><br>
 
+
                                     <!-- Subject Dropdown -->
                                     Subject:
                                     <select class="form-control" name="fk_subject_id" id="fk_subject_id" required>
@@ -224,6 +226,34 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function(){
+            function loadSections() {
+                var fk_strand_id = $('#fk_strand_id').val();
+                var fk_year_id = $('#fk_year_id').val();
+
+                if (fk_strand_id && fk_year_id) {
+                    $.ajax({
+                        url: "fetch_sections.php",
+                        type: "POST",
+                        data: { fk_strand_id: fk_strand_id, fk_year_id: fk_year_id },
+                        success: function(data) {
+                            console.log("Fetched sections:", data); // Debugging
+                            $('#fk_section_id').html('<option value="">Select Section</option>' + data);
+                        },
+                        error: function(xhr, status, error) {
+                            console.log("AJAX Error:", error);
+                        }
+                    });
+                } else {
+                    $('#fk_section_id').html('<option value="">Select Section</option>');
+                }
+            }
+
+            $('#fk_strand_id, #fk_year_id').change(loadSections);
+        });
+
+    </script>
 
     <style>
         @media (max-width: 768px) {
