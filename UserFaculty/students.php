@@ -88,7 +88,16 @@
 
         <!-- Main content -->
         <div class="content p-4 flex-grow-1">
-            <h4 class="text-muted"><?php echo $yl_name . '  ' . $strand_nn . '  ' . $section_name . '  ' . $subject_name ?></h4>
+        <div class="d-flex justify-content-between">
+        <h4 class="text-muted"><?php echo $yl_name . '  ' . $strand_nn . '  ' . $section_name . '  ' . $subject_name ?></h4>
+                <a href="gradeSection.php" class="link-offset-2 link-underline link-underline-opacity-0">
+                    <button type="button" class="btn btn-warning d-flex justify-content-center align-items-center text-center p-1">
+                        <i class="fas fa-arrow-left"></i> 
+                        <span class="text-wrap p-1">Go Back</span> 
+                    </button>
+                </a>
+            </div>
+            
             <div class="card table-container">
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-3">
@@ -351,7 +360,7 @@
             min-width: 100%; 
         }
         .table-responsive {
-            height: 375px;
+            height: 50vh;
         }
         .content { transition: margin-left 0.3s ease; }
         @media (max-width: 992px) { .content { margin-left: 0; } }

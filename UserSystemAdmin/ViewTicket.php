@@ -111,7 +111,15 @@
     <div class="d-flex">
         <?php include '../Assets/components/AdminSidebar.php'; ?>
         <div class="content p-4 flex-grow-1">
+            <div class="d-flex justify-content-between">
             <h4 class="text-muted">View Ticket <?php echo $bug_ticket?> </h4>
+            <a href="student_management.php" class="link-offset-2 link-underline link-underline-opacity-0">
+                    <button type="button" class="btn btn-warning d-flex justify-content-center align-items-center text-center p-1 mb-2">
+                        <i class="fas fa-arrow-left"></i> 
+                        <span class="text-wrap p-1">Go Back</span> 
+                    </button>
+                </a>
+            </div>
             <div class="card table-container">
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-3">

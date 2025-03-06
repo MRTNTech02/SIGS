@@ -122,7 +122,7 @@
                                 <div class="mb-3">
                                     <label for="bug_file" class="form-label"><strong>Attach File (optional):</strong></label>
                                     <p>Submit a document file with screenshots or steps to reproduce the issue.</p>
-                                    <input type="file" id="bug_file" name="bug_file" class="form-control">
+                                    <input type="file" accept="application/msword, application/pdf" id="bug_file" name="bug_file" class="form-control">
                                 </div>
                                 <button type="submit" class="btn btn-success"><i class="fas fa-paper-plane"></i> Submit Report</button>
                             </form>

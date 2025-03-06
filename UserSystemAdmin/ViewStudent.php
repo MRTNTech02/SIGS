@@ -135,7 +135,7 @@
         <div class="content p-4 w-100">
         <div class="d-flex justify-content-between">
             <h4 class="text-muted mb-4">Student Information</h4>
-            <a href="gradeSection.php" class="link-offset-2 link-underline link-underline-opacity-0">
+            <a href="student_management.php" class="link-offset-2 link-underline link-underline-opacity-0">
                     <button type="button" class="btn btn-warning d-flex justify-content-center align-items-center text-center p-1">
                         <i class="fas fa-arrow-left"></i> 
                         <span class="text-wrap p-1">Go Back</span> 
