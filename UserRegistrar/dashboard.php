@@ -47,7 +47,7 @@
         ?>
 
             <!-- Main Content -->
-            <div class="col-md-10 p-4">
+            <div class="content p-4 flex-grow-1">
                 <h4 class="text-muted">Dashboard</h4>
 
                 <div class="row">
@@ -117,7 +117,7 @@
                     <div class="col-lg-6 mb-3">
                         <div class="box-2 p-3 border border-success rounded">
                             <div class="text-success fw-bold mb-2">Reported Bugs</div>
-                            <div class="table-responsive" style="height: 40vh; overflow-y: auto;">
+                            <div class="table-responsive" style="height: 50vh; overflow-y: auto;">
                                 <table class="table table-striped">
                                     <thead class="text-center">
                                         <tr>
@@ -164,7 +164,7 @@
                     <div class="col-lg-6 mb-3">
                         <div class="box-2 p-3 border border-success rounded">
                             <div class="text-success fw-bold mb-2">Faculty</div>
-                            <div class="table-responsive" style="height: 40vh; overflow-y: auto;">
+                            <div class="table-responsive" style="height: 50vh; overflow-y: auto;">
                                 <table class="table table-striped">
                                     <thead class="text-center">
                                         <tr>

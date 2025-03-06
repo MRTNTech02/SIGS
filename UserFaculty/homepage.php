@@ -73,11 +73,11 @@ try {
         <div class="content p-4 flex-grow-1">
             <h4 class="text-muted">Dashboard</h4>
             <div class="main-content">
-                <div class="row">
-                    <div class="col-12 col-sm-6 col-md-6 col-lg-6 mb-3">
-                        <div class="box d-flex flex-column justify-content-top align-items-center p-4 border border-success rounded" style="min-height: 150px; min-width: 100%;">
-                            <div class="text-success text-bold mb-2">Students</div>
-                            <span class="h2 text-dark mt-2">
+                <div class="rowr">
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 mb-3">
+                    <div class="box d-flex flex-column justify-content-center align-items-center p-4 border border-success rounded" style="min-height: 100px; min-width: 100%;">
+                        <div class="text-success text-bold fw-bold mb-2">Students</div>
+                        <span class="h2 text-dark mt-2">
                             <?php 
                                     $sql = "SELECT count(*) countStudents FROM students_tbl WHERE s_status = 'Active'";
 
@@ -96,25 +96,13 @@ try {
                             </span> 
                         </div>
                     </div>
-                    <div class="col-12 col-sm-6 col-md-6 col-lg-6 mb-3">
-                        <div class="box d-flex flex-column justify-content-center align-items-center p-3 border border-success rounded" style="min-height: 150px; min-width: 100%;">
-                            <div class="text-success text-bold mb-2">Grade Submission</div>
-                            <!-- Circular Progress Bar -->
-                            <div class="position-relative">
-                                <svg width="80" height="80">
-                                    <circle cx="40" cy="40" r="30" stroke="#e0e0e0" stroke-width="5" fill="none"/>
-                                    <circle cx="40" cy="40" r="30" stroke="green" stroke-width="5" fill="none" stroke-dasharray="189" stroke-dashoffset="-95"/>
-                                </svg>
-                                <div class="position-absolute top-50 start-50 translate-middle fw-bold text-dark">50%</div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-                <div class="row">
+                
+                <div class="row justify-content-center">
                 <div class="col-lg-6 mb-3">
                         <div class="box-2 p-3 border border-success rounded">
                             <div class="text-success fw-bold mb-2">Reported Bugs</div>
-                            <div class="table-responsive" style="height: auto; overflow-y: auto;">
+                            <div class="table-responsive" style="height: 40vh; overflow-y: auto;">
                                 <table class="table table-striped">
                                     <thead class="text-center">
                                         <tr>
@@ -126,7 +114,7 @@ try {
                                     </thead>
                                     <tbody class="text-center">
                                         <?php
-                                            $sql = "SELECT * FROM bugs_tbl WHERE fk_user_id=:user_id ORDER BY bug_status DESC";
+                                            $sql = "SELECT * FROM bugs_tbl WHERE fk_user_id=:user_id AND bug_status = 'Open' ORDER BY insrt_ts DESC";
                                             try {
                                                 $result = $conn->prepare($sql);
                                                 $result->execute(['user_id' => $user_id]);
@@ -157,10 +145,10 @@ try {
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-6 col-lg-6 mb-3">
-                    <div class="box d-flex flex-column p-4 border border-success rounded" style="min-height: 150px; min-width: 100%;">
-                    <div class="text-success mb-3">Assigned Sections</div>
+                        <div class="box d-flex flex-column p-3 border border-success rounded" style="min-height: 150px; min-width: 100%;">
+                        <div class="text-success fw-bold mb-2">Assigned Sections</div>
                     <div class="row">
-                    <div class="table-responsive" style="height: auto; overflow-y: auto;">
+                    <div class="table-responsive" style="height: 40vh; overflow-y: auto;">
                         <table class="table table-striped">
                             <thead class="text-center">
                                 <tr>

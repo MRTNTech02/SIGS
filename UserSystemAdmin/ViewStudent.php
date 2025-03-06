@@ -133,13 +133,21 @@
         ?>
         <!-- Main content -->
         <div class="content p-4 w-100">
+        <div class="d-flex justify-content-between">
             <h4 class="text-muted mb-4">Student Information</h4>
+            <a href="gradeSection.php" class="link-offset-2 link-underline link-underline-opacity-0">
+                    <button type="button" class="btn btn-warning d-flex justify-content-center align-items-center text-center p-1">
+                        <i class="fas fa-arrow-left"></i> 
+                        <span class="text-wrap p-1">Go Back</span> 
+                    </button>
+                </a>
+        </div>
             <div class="main-content">
                 <div class="container">
                         <div class="main">
                             <div class="profile-info-container">
                                 <div class="row">
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-3 mr-2">
                                         <div class="box2" style="margin-top: 10px; margin-bottom: 10px; height:auto; width: 100%">
                                             <img src='../Assets/img/profile_pictures/studentdefaultprofile.png' alt='else' class='avatar  mx-auto d-block'>
                                         </div> 
@@ -171,7 +179,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="assigned-subjects">
+                            <div class="assigned-subjects" style="height: 45vh; overflow-y: auto;">
                                 <h5 class="text-success mb-2">Subjects Taking</h5>
                                 <form method="GET">
                                     <input type="hidden" id="assignment_id" name="assignment_id" value="<?php echo $assignment_id; ?>">
@@ -395,3 +403,4 @@
 
 </body>
 </html>
+<script src="../Bootstrap/js/bootstrap.bundle.min.js"></script> 

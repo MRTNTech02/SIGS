@@ -111,9 +111,9 @@
         ?>
         <!-- Main content -->
         <div class="content p-4 w-100">
-            <h4 class="text-muted mb-4">Assign Subject to <?php echo $faculty_name ?></h4>
+            <h4 class="text-muted mb-2">Assign Subject to <?php echo $faculty_name ?></h4>
             <div class="main-content">
-                <div class="card">
+                <div class="card" style="min-height: 40vh;">
                     <div class="card-body">
                         <form method="post" action="AssignSubjectFaculty.php?user_id=<?php echo $faculty_id ?>">
                             <input type="hidden" name="fk_user_id" id="fk_user_id" value="<?php echo $faculty_id ?>">

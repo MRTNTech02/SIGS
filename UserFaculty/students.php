@@ -60,6 +60,7 @@
             $subject_id = $data["subject_id"];
             $strand_id = $data["strand_id"];
             $year_level_id = $data["year_level_id"];
+            $section_name = $data["section_name"];
             
         }
         }catch(Exception $e){
@@ -87,7 +88,7 @@
 
         <!-- Main content -->
         <div class="content p-4 flex-grow-1">
-            <h4 class="text-muted"><?php echo $yl_name . '  ' . $strand_nn . '  ' . $subject_name ?></h4>
+            <h4 class="text-muted"><?php echo $yl_name . '  ' . $strand_nn . '  ' . $section_name . '  ' . $subject_name ?></h4>
             <div class="card table-container">
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-3">
@@ -384,7 +385,7 @@
         }
         .save-btn {
             position: absolute;
-            right: 40px; 
+            /* right: 50vh;  */
         }
     </style>
 </body>

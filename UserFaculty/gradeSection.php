@@ -75,7 +75,7 @@
 </head>
 <body>
     <?php
-        include '../Assets/components/Navbar.php';
+        include '../Assets/components/FacultyNavbar.php';
     ?>
     <div class="d-flex">
         <?php
@@ -91,7 +91,7 @@
                     <div class="box d-flex flex-column p-4 border border-success rounded" style="min-height: 150px; min-width: 100%;">
                     <div class="text-success mb-3">Assigned Sections</div>
                     <div class="row">
-                <div class="table-responsive">
+                <div class="table-responsive" style="height: 50vh; overflow-y: auto;">
                         <table class="table" id="studentsTable">
                             <thead align="center">
                                 <tr>

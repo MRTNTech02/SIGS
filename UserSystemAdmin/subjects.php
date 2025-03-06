@@ -71,7 +71,7 @@
                     </div>
 
                     <!-- Table -->
-                    <div class="table-responsive">
+                    <div class="table-responsive" style="height: 45vh; overflow-y: auto;">
                         <table class="table table-striped" id="studentsTable">
                             <thead align="center">
                                 <tr>

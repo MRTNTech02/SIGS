@@ -116,12 +116,12 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-12 col-sm-4 col-md-4 col-lg-4 mb-3">
-                        <div class="box d-flex flex-column p-4 border border-success rounded" style="min-height: 50vh; min-width: 100%;">
-                            <div class="text-success text-bold mb-2">Bug Reports</div> 
-                            <div class="table-responsive">
-                                <table class="table table-striped" id="studentsTable">
-                                    <thead align="center">
+                    <div class="col-12 col-sm-4 col-md-4 col-lg-4 mb-2">
+                    <div class="box-2 p-2 border border-success rounded">
+                            <div class="text-success mb-2">Reported Bugs</div>
+                            <div class="table-responsive" style="height: 40vh; overflow-y: auto;">
+                                <table class="table table-striped">
+                                    <thead class="text-center">
                                         <tr>
                                             <th>No.</th>
                                             <th>Ticket Number</th>
@@ -173,7 +173,7 @@
                         </div>
                     </div>
                     <div class="col-12 col-sm-8 col-md-8 col-lg-8 mb-3">
-                        <div class="box d-flex flex-column p-4 border border-success rounded" style="min-height: 50vh; width: 100%;">
+                        <div class="box d-flex flex-column p-2 border border-success rounded" style="min-height: 50vh; width: 100%;">
                             <div class="text-success text-bold mb-2">User Logs</div> 
                             <div class="table-responsive" style="height: 40vh; overflow-y: auto;">
                                 <table class="table table-striped" id="studentsTable">
@@ -253,3 +253,4 @@
     </style>
 </body>
 </html>
+<script src="../Bootstrap/js/bootstrap.bundle.min.js"></script> 
