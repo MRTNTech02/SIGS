@@ -250,7 +250,7 @@
                     </div>
 
                     <!-- Select rows per page -->
-                    <div class="d-flex justify-content-between align-items-center mt-3">
+                    <!-- <div class="d-flex justify-content-between align-items-center mt-3">
                         <div class="d-inline-flex align-items-center">
                             <label for="rowsPerPage" class="me-2 mb-0">Rows per page:</label>
                             <select id="rowsPerPage" class="form-select">
@@ -261,11 +261,11 @@
                             </select>
                         </div>
 
-                        <!-- Pagination controls -->
+                        Pagination controls 
                         <nav>
                             <ul class="pagination mb-0" id="pagination"></ul>
                         </nav>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -360,7 +360,7 @@
             min-width: 100%; 
         }
         .table-responsive {
-            height: 50vh;
+            height: 60vh;
         }
         .content { transition: margin-left 0.3s ease; }
         @media (max-width: 992px) { .content { margin-left: 0; } }

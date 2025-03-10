@@ -271,7 +271,7 @@
                         </table>
                     </div>
 
-                    <!-- Select rows per page -->
+                    <!-- Select rows per page 
                     <div class="d-flex justify-content-between align-items-center mt-3">
                         <div class="d-inline-flex align-items-center">
                             <label for="rowsPerPage" class="me-2 mb-0">Rows per page:</label>
@@ -283,11 +283,11 @@
                             </select>
                         </div>
 
-                        <!-- Pagination controls -->
+                        <!-- Pagination controls 
                         <nav>
                             <ul class="pagination mb-0" id="pagination"></ul>
                         </nav>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
